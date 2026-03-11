@@ -1,7 +1,7 @@
 <script setup>
 import { ref, reactive, nextTick } from 'vue'
 import { AGENTS } from '../../constants/agents'
-import { ROLE_LABELS, ROLES_INIT } from '../../constants/roles'
+import { ROLE_LABELS, ROLES_INIT, ROLE_PRESETS } from '../../constants/roles'
 import AgentBanBoard from '../../components/AgentBanBoard.vue'
 import './Agent5v5.css'
 
@@ -40,6 +40,15 @@ function scrollTo(el) {
 function toggleRole(player, roleKey) {
   const r = player.roles.find(r => r.key === roleKey)
   if (r) r.active = !r.active
+}
+
+function applyPreset(team, preset) {
+  team.forEach((player, i) => {
+    const assigned = preset.roles[i]
+    player.roles.forEach(r => {
+      r.active = assigned === null ? false : r.key === assigned
+    })
+  })
 }
 
 // --- プレイヤーのプール取得 ---
@@ -133,6 +142,16 @@ function rollAgents() {
         <div class="team-card__header">
           <span class="team-card__dot team-card__dot--a"></span>
           <input class="team-card__name-input" v-model="teamAName" maxlength="12" :disabled="isRolling" />
+          <div class="preset-bar">
+            <button
+              v-for="p in ROLE_PRESETS" :key="p.key"
+              class="preset-btn"
+              :class="{ 'preset-btn--clr': p.key === 'clr' }"
+              :title="p.desc"
+              :disabled="isRolling"
+              @click="applyPreset(teamA, p)"
+            >{{ p.label }}</button>
+          </div>
         </div>
         <AgentBanBoard ref="banBoardRefA" :disabled="isRolling" />
         <div class="player-list">
@@ -165,6 +184,16 @@ function rollAgents() {
         <div class="team-card__header">
           <span class="team-card__dot team-card__dot--b"></span>
           <input class="team-card__name-input" v-model="teamBName" maxlength="12" :disabled="isRolling" />
+          <div class="preset-bar">
+            <button
+              v-for="p in ROLE_PRESETS" :key="p.key"
+              class="preset-btn"
+              :class="{ 'preset-btn--clr': p.key === 'clr' }"
+              :title="p.desc"
+              :disabled="isRolling"
+              @click="applyPreset(teamB, p)"
+            >{{ p.label }}</button>
+          </div>
         </div>
         <AgentBanBoard ref="banBoardRefB" :disabled="isRolling" />
         <div class="player-list">

@@ -1,7 +1,7 @@
 <script setup>
 import { ref, reactive, nextTick } from 'vue'
 import { AGENTS } from '../../constants/agents'
-import { ROLE_LABELS, ROLES_INIT } from '../../constants/roles'
+import { ROLE_LABELS, ROLES_INIT, ROLE_PRESETS } from '../../constants/roles'
 import AgentBanBoard from '../../components/AgentBanBoard.vue'
 import './Agent5.css'
 
@@ -33,8 +33,14 @@ function toggleRole(player, roleKey) {
   const r = player.roles.find(r => r.key === roleKey)
   if (r) r.active = !r.active
 }
-function setAllRoles(player, active) {
-  player.roles.forEach(r => { r.active = active })
+
+function applyPreset(preset) {
+  team.forEach((player, i) => {
+    const assigned = preset.roles[i]
+    player.roles.forEach(r => {
+      r.active = assigned === null ? false : r.key === assigned
+    })
+  })
 }
 
 // --- プレイヤーのプール取得 ---
@@ -118,6 +124,16 @@ function rollAgents() {
       <div class="a5-card__header">
         <span class="a5-card__dot"></span>
         <span class="a5-card__title">YOUR TEAM</span>
+        <div class="preset-bar">
+          <button
+            v-for="p in ROLE_PRESETS" :key="p.key"
+            class="preset-btn"
+            :class="{ 'preset-btn--clr': p.key === 'clr' }"
+            :title="p.desc"
+            :disabled="isRolling"
+            @click="applyPreset(p)"
+          >{{ p.label }}</button>
+        </div>
       </div>
       <div class="player-list">
         <div v-for="(player, idx) in team" :key="idx" class="player-block">
