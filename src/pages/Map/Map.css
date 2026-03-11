@@ -137,65 +137,143 @@
   margin-top: 3px;
 }
 
-/* ===== ROULETTE DISPLAY ===== */
+/* ===== ROULETTE AREA ===== */
 .roulette-area {
   margin-top: 28px;
 }
 
+/* ラベル redesign */
 .roulette-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   font-family: 'Rajdhani', sans-serif;
-  font-size: 13px;
-  letter-spacing: 3px;
-  color: var(--text-dim);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: var(--red);
   text-transform: uppercase;
   margin-bottom: 12px;
   border-bottom: 1px solid var(--border);
   padding-bottom: 10px;
-  text-align: center;
-  animation: blink 0.6s step-end infinite;
 }
 
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.3; }
+.roulette-label__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--red);
+  box-shadow: 0 0 8px rgba(255,70,85,0.9);
+  animation: labelDotPulse 0.45s ease-in-out infinite alternate;
+  flex-shrink: 0;
+}
+.roulette-label__dot:last-child { animation-delay: 0.22s; }
+@keyframes labelDotPulse {
+  from { opacity: 0.25; transform: scale(0.6); box-shadow: none; }
+  to   { opacity: 1;    transform: scale(1.3); box-shadow: 0 0 10px rgba(255,70,85,0.9); }
 }
 
+/* ===== ルーレット ディスプレイ ===== */
 .roulette-display {
   position: relative;
   border-radius: 4px;
   overflow: hidden;
   aspect-ratio: 21 / 9;
   border: 2px solid var(--border);
-  transition: border-color 0.15s;
+  transition: border-color 0.1s;
 }
 
-/* 確定時: 赤枠でフラッシュ */
+/* ローリング中: シェイク + ボーダーパルス */
+.roulette-display--rolling {
+  border-color: rgba(255, 70, 85, 0.5);
+  animation: rouletteShake 0.09s ease-in-out infinite,
+             rouletteBorderPulse 0.35s ease-in-out infinite alternate;
+}
+@keyframes rouletteShake {
+  0%, 100% { transform: translate(0, 0); }
+  25%       { transform: translate(-2px, 0.5px); }
+  75%       { transform: translate(2px, -0.5px); }
+}
+@keyframes rouletteBorderPulse {
+  from { box-shadow: 0 0 6px rgba(255,70,85,0.2);  border-color: rgba(255,70,85,0.3); }
+  to   { box-shadow: 0 0 24px rgba(255,70,85,0.6); border-color: rgba(255,70,85,0.8); }
+}
+
+/* 確定時: ボーダー爆発 */
 .roulette-display--reveal {
   border-color: var(--red);
-  box-shadow: 0 0 32px rgba(255, 70, 85, 0.6);
-  animation: borderPulse 0.5s ease forwards;
+  animation: borderExplosion 0.7s ease forwards;
+}
+@keyframes borderExplosion {
+  0%   { box-shadow: 0 0 0 rgba(255,70,85,0);    transform: scale(1); }
+  15%  { box-shadow: 0 0 80px rgba(255,70,85,1), 0 0 160px rgba(255,70,85,0.4); transform: scale(1.015); }
+  40%  { transform: scale(0.997); }
+  100% { box-shadow: 0 0 40px rgba(255,70,85,0.5); transform: scale(1); }
 }
 
-@keyframes borderPulse {
-  0%   { box-shadow: 0 0 0   rgba(255,70,85,0); }
-  50%  { box-shadow: 0 0 60px rgba(255,70,85,0.9); }
-  100% { box-shadow: 0 0 32px rgba(255,70,85,0.5); }
+/* 確定時: 画像ズームイン */
+.roulette-display--reveal .roulette-display__img {
+  animation: imgRevealZoom 0.7s ease forwards;
+}
+@keyframes imgRevealZoom {
+  from { transform: scale(1.08); filter: brightness(1.6) blur(3px); }
+  to   { transform: scale(1);    filter: brightness(1)   blur(0px); }
 }
 
+/* 画像 */
 .roulette-display__img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
-  /* 高速切替のためトランジションなし */
 }
 
+/* オーバーレイ */
 .roulette-display__overlay {
   position: absolute;
   inset: 0;
   background: linear-gradient(135deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.15) 100%);
 }
 
+/* ===== Rolling エフェクト ===== */
+
+/* スキャンライン */
+.roulette-scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(0, 0, 0, 0.14) 3px,
+    rgba(0, 0, 0, 0.14) 4px
+  );
+  pointer-events: none;
+  z-index: 3;
+  animation: scanlinesScroll 0.12s steps(1) infinite;
+}
+@keyframes scanlinesScroll {
+  0%   { background-position: 0 0; }
+  100% { background-position: 0 4px; }
+}
+
+/* グリッチバー */
+.roulette-glitch-bar {
+  position: absolute;
+  left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, rgba(255,70,85,0.6), rgba(125,211,252,0.4), transparent);
+  pointer-events: none;
+  z-index: 4;
+  animation: glitchBarFlash 0.22s steps(1) infinite;
+}
+@keyframes glitchBarFlash {
+  0%, 60%, 100% { opacity: 0; transform: scaleY(1); }
+  25%, 45%      { opacity: 1; transform: scaleY(2); }
+}
+
+/* ===== コンテンツ ===== */
 .roulette-display__content {
   position: absolute;
   inset: 0;
@@ -203,8 +281,10 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  z-index: 5;
 }
 
+/* マップ名 — ローリング: グリッチ */
 .roulette-display__name {
   font-family: 'Rajdhani', sans-serif;
   font-size: 64px;
@@ -214,65 +294,140 @@
   text-transform: uppercase;
   line-height: 1;
   text-shadow: 0 2px 8px rgba(0,0,0,0.9);
-  transition: none;
 }
 
-/* 確定時: 白く輝く */
+.roulette-display__name--rolling {
+  animation: mapNameGlitch 0.25s steps(1) infinite;
+}
+@keyframes mapNameGlitch {
+  0%, 65%, 100% {
+    transform: none;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.9);
+    filter: none;
+  }
+  68% {
+    transform: translateX(-4px) skewX(-2deg);
+    text-shadow: 4px 0 #ff4655, 0 2px 8px rgba(0,0,0,0.9);
+    filter: blur(0.8px);
+  }
+  72% {
+    transform: translateX(4px) skewX(2deg);
+    text-shadow: -4px 0 #7dd3fc;
+  }
+  76% {
+    transform: translateX(-2px);
+    text-shadow: 2px 0 #ff4655;
+  }
+  80% { transform: none; filter: none; }
+}
+
+/* マップ名 — 確定: インパクト */
 .roulette-display__name--reveal {
   color: #fff;
   text-shadow:
-    0 0 30px rgba(255,70,85,0.9),
-    0 0 60px rgba(255,70,85,0.5),
+    0 0 30px rgba(255,70,85,1),
+    0 0 70px rgba(255,70,85,0.6),
+    0 0 120px rgba(255,70,85,0.3),
     0 2px 8px rgba(0,0,0,0.9);
-  animation: nameReveal 0.5s ease forwards;
+  animation: nameImpact 0.55s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
-
-@keyframes nameReveal {
-  0%   { transform: scale(0.9); opacity: 0.7; }
-  60%  { transform: scale(1.08); }
-  100% { transform: scale(1);   opacity: 1; }
+@keyframes nameImpact {
+  0%   { transform: scale(0.5) translateY(20px); opacity: 0; filter: blur(6px); letter-spacing: 2px; }
+  55%  { transform: scale(1.12) translateY(-4px); opacity: 1; filter: blur(0); }
+  75%  { transform: scale(0.97) translateY(2px); }
+  100% { transform: scale(1)    translateY(0);   opacity: 1; letter-spacing: 6px; }
 }
 
 .roulette-display__sub {
   font-size: 14px;
   letter-spacing: 2px;
-  color: rgba(255,255,255,0.7);
-  margin-top: 8px;
-  animation: fadeUp 0.4s ease forwards;
+  color: rgba(255,255,255,0.75);
+  margin-top: 10px;
+  animation: fadeUp 0.4s ease 0.1s forwards;
+  opacity: 0;
 }
 
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
+/* MAP CONFIRMED ラベル */
+.roulette-confirm-label {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 5px;
+  color: var(--red);
+  text-transform: uppercase;
+  margin-top: 10px;
+  animation: confirmLabelIn 0.4s ease 0.25s forwards;
+  opacity: 0;
+}
+@keyframes confirmLabelIn {
+  from { opacity: 0; transform: translateY(6px); letter-spacing: 10px; }
+  to   { opacity: 1; transform: translateY(0);   letter-spacing: 5px; }
 }
 
-/* 確定時の白フラッシュ */
+/* ===== Reveal エフェクト ===== */
+
+/* 赤バーストフラッシュ */
+.roulette-confirm-burst {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(255,70,85,0.35) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 4;
+  animation: burstFade 0.6s ease forwards;
+}
+@keyframes burstFade {
+  0%   { opacity: 1; transform: scale(0.8); }
+  40%  { opacity: 0.8; transform: scale(1.2); }
+  100% { opacity: 0; transform: scale(1.5); }
+}
+
+/* ラインスイープ */
+.roulette-confirm-lines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 18px,
+    rgba(255,70,85,0.08) 18px,
+    rgba(255,70,85,0.08) 19px
+  );
+  pointer-events: none;
+  z-index: 4;
+  animation: linesFade 0.5s ease forwards;
+}
+@keyframes linesFade {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* 白フラッシュ */
 .roulette-flash {
   position: absolute;
   inset: 0;
-  background: rgba(255, 255, 255, 0.25);
-  animation: flash 0.5s ease forwards;
+  background: rgba(255, 255, 255, 0.3);
+  animation: flash 0.6s ease forwards;
   pointer-events: none;
+  z-index: 6;
 }
-
 @keyframes flash {
   0%   { opacity: 1; }
   100% { opacity: 0; }
 }
 
-/* ===== CONFIRMED MAP RESULT ===== */
+/* ===== 確定結果カード ===== */
 .map-result {
   position: relative;
   border-radius: 4px;
   overflow: hidden;
   aspect-ratio: 21 / 9;
-  animation: popIn 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-  box-shadow: 0 0 32px rgba(255,70,85,0.3);
+  animation: mapResultReveal 0.65s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  box-shadow: 0 0 60px rgba(255,70,85,0.4), 0 4px 32px rgba(0,0,0,0.6);
 }
-
-@keyframes popIn {
-  from { opacity: 0; transform: scale(0.93); }
-  to   { opacity: 1; transform: scale(1); }
+@keyframes mapResultReveal {
+  0%   { opacity: 0; transform: scale(0.88); filter: brightness(0.2) blur(10px); }
+  50%  { filter: brightness(1.15) blur(0); }
+  100% { opacity: 1; transform: scale(1);    filter: brightness(1) blur(0); }
 }
 
 .map-result__img {
@@ -285,7 +440,22 @@
 .map-result__overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.15) 100%);
+  background: linear-gradient(135deg, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.15) 100%);
+}
+
+/* スキャンライン装飾 */
+.map-result__scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(0, 0, 0, 0.06) 3px,
+    rgba(0, 0, 0, 0.06) 4px
+  );
+  pointer-events: none;
+  z-index: 1;
 }
 
 .map-result__content {
@@ -296,13 +466,16 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
+  z-index: 2;
 }
 
 .map-result__label {
   font-size: 11px;
-  letter-spacing: 4px;
-  color: rgba(255,255,255,0.7);
+  letter-spacing: 5px;
+  color: rgba(255,255,255,0.6);
   text-transform: uppercase;
+  animation: fadeUp 0.4s ease 0.2s forwards;
+  opacity: 0;
 }
 
 .map-result__name {
@@ -313,158 +486,32 @@
   letter-spacing: 6px;
   text-transform: uppercase;
   line-height: 1;
-  text-shadow: 0 0 40px rgba(255,70,85,0.8), 0 2px 8px rgba(0,0,0,0.9);
+  text-shadow:
+    0 0 50px rgba(255,70,85,1),
+    0 0 100px rgba(255,70,85,0.5),
+    0 2px 8px rgba(0,0,0,0.9);
+  animation: mapResultNameIn 0.55s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.15s forwards;
+  opacity: 0;
+}
+@keyframes mapResultNameIn {
+  0%   { opacity: 0; transform: scale(0.6) translateY(12px); letter-spacing: 2px; filter: blur(4px); }
+  65%  { transform: scale(1.06) translateY(-3px); opacity: 1; filter: blur(0); }
+  82%  { transform: scale(0.98) translateY(1px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); letter-spacing: 6px; }
 }
 
 .map-result__sub {
   font-size: 14px;
   letter-spacing: 2px;
-  color: rgba(255,255,255,0.65);
-}
-
-/* ===== 抽選演出ステージ ===== */
-.roll-stage {
-  position: relative;
-  overflow: hidden;
-  background: var(--bg2);
-  border: 1px solid rgba(255, 70, 85, 0.3);
-  border-radius: 6px;
-  margin-top: 20px;
-  padding: 44px 24px 36px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 18px;
-}
-.roll-stage::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 6px;
-  padding: 2px;
-  background: linear-gradient(90deg, #ff4655, #42b883, #ff4655, #42b883);
-  background-size: 300% 100%;
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  animation: rollRacingBorder 1.2s linear infinite;
-  pointer-events: none;
-}
-@keyframes rollRacingBorder {
-  0%   { background-position: 0% 0%; }
-  100% { background-position: 300% 0%; }
-}
-.roll-stage__scanline {
-  position: absolute;
-  left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(255,70,85,0.7), transparent);
-  animation: rollScanline 1.7s linear forwards;
-  pointer-events: none;
-}
-@keyframes rollScanline {
-  0%   { top: 0%; opacity: 1; }
-  100% { top: 100%; opacity: 0.2; }
-}
-.roll-stage__title {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 52px;
-  font-weight: 700;
-  color: var(--text);
-  letter-spacing: 10px;
-  text-transform: uppercase;
-  line-height: 1;
-  animation: rollGlitch 1.5s ease-in-out infinite;
-  position: relative;
-  z-index: 1;
-}
-.roll-stage__title-sub {
-  color: var(--red);
-  display: block;
-  font-size: 28px;
-  letter-spacing: 12px;
-  text-shadow: 0 0 24px rgba(255,70,85,0.6);
-  margin-top: 4px;
-}
-@keyframes rollGlitch {
-  0%, 82%, 100% { transform: none; text-shadow: none; filter: none; }
-  83% { transform: translateX(-5px); text-shadow: 5px 0 #ff4655; filter: blur(0.5px); }
-  84% { transform: translateX(5px);  text-shadow: -5px 0 #42b883; }
-  85% { transform: translateX(-3px); text-shadow: 3px 0 #ff4655; }
-  86% { transform: none; filter: none; }
-  87% { transform: translateX(4px) scaleY(1.04); text-shadow: -4px 0 #42b883; }
-  88% { transform: none; text-shadow: none; }
-}
-.roll-stage__sub {
-  font-size: 11px;
-  letter-spacing: 4px;
-  color: var(--text-dim);
-  text-transform: uppercase;
-  position: relative;
-  z-index: 1;
-  animation: rollSubBlink 1.1s step-end infinite;
-}
-@keyframes rollSubBlink {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.3; }
-}
-.roll-stage__chips {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 6px;
-  position: relative;
-  z-index: 1;
-  max-width: 520px;
-}
-.roll-stage__chip {
-  font-size: 10px;
-  color: var(--text-dim);
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  padding: 3px 9px;
-  border: 1px solid var(--border);
-  border-radius: 2px;
-  background: var(--bg3);
-  animation: rollChipFloat 1s ease-in-out infinite alternate;
-  animation-fill-mode: both;
+  color: rgba(255,255,255,0.6);
+  animation: fadeUp 0.4s ease 0.4s forwards;
   opacity: 0;
 }
-@keyframes rollChipFloat {
-  0%   { opacity: 0.2; transform: translateY(4px); }
-  100% { opacity: 0.9; transform: translateY(-4px); }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-.roll-stage__progress-wrap {
-  width: 100%;
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: 2px;
-  height: 4px;
-  overflow: hidden;
-  position: relative;
-  z-index: 1;
-}
-.roll-stage__progress {
-  height: 100%;
-  background: linear-gradient(90deg, #ff4655, #42b883, #ff4655);
-  background-size: 200% 100%;
-  border-radius: 2px;
-  animation: rollProgressFill 1.7s cubic-bezier(0.4, 0, 0.2, 1) forwards,
-             rollProgressShimmer 0.8s linear infinite;
-}
-@keyframes rollProgressFill {
-  0%   { width: 0%; }
-  100% { width: 100%; }
-}
-@keyframes rollProgressShimmer {
-  0%   { background-position: 0% 0%; }
-  100% { background-position: 200% 0%; }
-}
-.roll-stage-enter-active { transition: opacity 0.2s ease, transform 0.2s ease; }
-.roll-stage-leave-active { transition: opacity 0.15s ease; }
-.roll-stage-enter-from   { opacity: 0; transform: translateY(8px) scale(0.98); }
-.roll-stage-leave-to     { opacity: 0; }
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 700px) {

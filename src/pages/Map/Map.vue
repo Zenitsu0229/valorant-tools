@@ -38,8 +38,6 @@ const isRevealing = ref(false)
 // --- スクロール用 ref ---
 const rouletteAreaRef = ref(null)
 const resultAreaRef   = ref(null)
-const stageRef        = ref(null)
-const showStage       = ref(false)
 
 function scrollTo(el) {
   if (!el) return
@@ -53,7 +51,7 @@ function toggleMap(name) {
 }
 
 function rollMap() {
-  if (isRolling.value || showStage.value) return
+  if (isRolling.value) return
   error.value = ''
   const pool = maps.filter(m => !m.excluded)
   if (pool.length === 0) {
@@ -61,43 +59,37 @@ function rollMap() {
     return
   }
 
-  const finalMap = pool[Math.floor(Math.random() * pool.length)]
-  result.value      = null
+  const finalMap    = pool[Math.floor(Math.random() * pool.length)]
+  isRolling.value   = true
   isRevealing.value = false
-  showStage.value   = true
-  nextTick(() => scrollTo(stageRef.value))
+  result.value      = null
+  nextTick(() => scrollTo(rouletteAreaRef.value))
 
-  setTimeout(() => {
-    showStage.value   = false
-    isRolling.value   = true
-    nextTick(() => scrollTo(rouletteAreaRef.value))
+  const TOTAL_STEPS = 28
 
-    const TOTAL_STEPS = 22
-
-    function step(count) {
-      if (count >= TOTAL_STEPS) {
-        rollingMap.value  = finalMap
-        isRevealing.value = true
-        setTimeout(() => {
-          isRolling.value   = false
-          isRevealing.value = false
-          result.value      = finalMap
-          resultKey.value++
-          nextTick(() => scrollTo(resultAreaRef.value))
-        }, 600)
-        return
-      }
-
-      rollingMap.value = MAPS[Math.floor(Math.random() * MAPS.length)]
-
-      const progress = count / TOTAL_STEPS
-      const delay    = 60 + Math.pow(progress, 2.2) * 640
-
-      setTimeout(() => step(count + 1), delay)
+  function step(count) {
+    if (count >= TOTAL_STEPS) {
+      rollingMap.value  = finalMap
+      isRevealing.value = true
+      setTimeout(() => {
+        isRolling.value   = false
+        isRevealing.value = false
+        result.value      = finalMap
+        resultKey.value++
+        nextTick(() => scrollTo(resultAreaRef.value))
+      }, 900)
+      return
     }
 
-    step(0)
-  }, 1800)
+    rollingMap.value = MAPS[Math.floor(Math.random() * MAPS.length)]
+
+    const progress = count / TOTAL_STEPS
+    const delay    = 45 + Math.pow(progress, 2.4) * 700
+
+    setTimeout(() => step(count + 1), delay)
+  }
+
+  step(0)
 }
 </script>
 
@@ -140,43 +132,47 @@ function rollMap() {
 
     <div v-if="error" class="notice">{{ error }}</div>
 
-    <button class="btn-primary" @click="rollMap" :disabled="isRolling || showStage">
-      {{ showStage ? '🎯 LOADING...' : isRolling ? '🎯 ROLLING...' : '🎯 マップ抽選開始' }}
+    <button class="btn-primary" @click="rollMap" :disabled="isRolling">
+      {{ isRolling ? '🎯 ROLLING...' : '🎯 マップ抽選開始' }}
     </button>
-
-    <!-- 抽選演出ステージ -->
-    <Transition name="roll-stage">
-      <div v-if="showStage" class="roll-stage" ref="stageRef">
-        <div class="roll-stage__scanline"></div>
-        <div class="roll-stage__title">
-          MAP
-          <span class="roll-stage__title-sub">SELECT</span>
-        </div>
-        <div class="roll-stage__sub">FINDING BATTLEGROUND</div>
-        <div class="roll-stage__chips">
-          <span
-            v-for="(m, i) in maps.filter(x => !x.excluded)" :key="m.name"
-            class="roll-stage__chip"
-            :style="{ animationDelay: `${i * 100}ms` }"
-          >{{ m.name }}</span>
-        </div>
-        <div class="roll-stage__progress-wrap">
-          <div class="roll-stage__progress"></div>
-        </div>
-      </div>
-    </Transition>
 
     <!-- ルーレット中 / 確定演出 -->
     <div v-if="isRolling && rollingMap" class="roulette-area" ref="rouletteAreaRef">
-      <div class="roulette-label">— ROLLING —</div>
-      <div class="roulette-display" :class="{ 'roulette-display--reveal': isRevealing }">
+      <div class="roulette-label">
+        <span class="roulette-label__dot"></span>
+        SCANNING MAPS
+        <span class="roulette-label__dot"></span>
+      </div>
+      <div
+        class="roulette-display"
+        :class="{ 'roulette-display--reveal': isRevealing, 'roulette-display--rolling': !isRevealing }"
+      >
         <img class="roulette-display__img" :src="rollingMap.splash" :alt="rollingMap.name" />
         <div class="roulette-display__overlay" />
+
+        <!-- Rolling overlays -->
+        <template v-if="!isRevealing">
+          <div class="roulette-scanlines"></div>
+          <div
+            v-for="n in 3" :key="n"
+            class="roulette-glitch-bar"
+            :style="{ top: `${n * 28}%`, animationDelay: `${(n - 1) * 0.08}s` }"
+          ></div>
+        </template>
+
+        <!-- Reveal overlays -->
+        <template v-if="isRevealing">
+          <div class="roulette-confirm-burst"></div>
+          <div class="roulette-confirm-lines"></div>
+        </template>
+
         <div class="roulette-display__content">
-          <div class="roulette-display__name" :class="{ 'roulette-display__name--reveal': isRevealing }">
-            {{ rollingMap.name }}
-          </div>
+          <div
+            class="roulette-display__name"
+            :class="{ 'roulette-display__name--reveal': isRevealing, 'roulette-display__name--rolling': !isRevealing }"
+          >{{ rollingMap.name }}</div>
           <div v-if="isRevealing" class="roulette-display__sub">{{ rollingMap.sub }}</div>
+          <div v-if="isRevealing" class="roulette-confirm-label">— MAP CONFIRMED —</div>
         </div>
         <div v-if="isRevealing" class="roulette-flash" />
       </div>
@@ -188,6 +184,7 @@ function rollMap() {
       <div class="map-result" :key="resultKey">
         <img class="map-result__img" :src="result.splash" :alt="result.name" />
         <div class="map-result__overlay" />
+        <div class="map-result__scanlines"></div>
         <div class="map-result__content">
           <div class="map-result__label">TODAY'S MAP</div>
           <div class="map-result__name">{{ result.name }}</div>

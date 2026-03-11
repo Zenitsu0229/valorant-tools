@@ -46,23 +46,19 @@ watch(pendingTeams, (val) => {
   if (!val) return
   const { a, b } = consumeTeams()
 
-  // 前回の抽選結果をリセット
   results.value     = null
   rollingRows.value = null
   isRolling.value   = false
   error.value       = ''
 
-  // TEAM A: サイズ調整 → 名前セット
   while (teamA.length > Math.max(a.length, 1)) teamA.pop()
   while (teamA.length < a.length) teamA.push(makePlayer(teamA.length + 1))
   a.forEach((name, i) => { teamA[i].name = name })
 
-  // TEAM B: サイズ調整 → 名前セット
   while (teamB.length > Math.max(b.length, 1)) teamB.pop()
   while (teamB.length < b.length) teamB.push(makePlayer(teamB.length + 1))
   b.forEach((name, i) => { teamB[i].name = name })
 
-  // 最上部へスクロール → トースト表示
   window.scrollTo({ top: 0, behavior: 'smooth' })
   nextTick(() => showToast('ユーザー名を設定しました。'))
 }, { immediate: true })
@@ -72,8 +68,6 @@ const rollingAreaRef  = ref(null)
 const resultAreaRef   = ref(null)
 const playerListRefA  = ref(null)
 const playerListRefB  = ref(null)
-const stageRef        = ref(null)
-const showStage       = ref(false)
 
 function focusNextInput(listRef, idx) {
   const inputs = listRef.value?.querySelectorAll('input[type="text"]')
@@ -131,7 +125,7 @@ function getPool(player, banned, usedNames = []) {
 
 // --- ランダム割り振り ---
 function rollAgents() {
-  if (isRolling.value || showStage.value) return
+  if (isRolling.value) return
   error.value = ''
 
   const bannedA = banBoardRefA.value?.banned ?? new Set()
@@ -151,55 +145,48 @@ function rollAgents() {
   const finalB = calcTeam(teamB, bannedB)
 
   results.value     = null
-  rollingRows.value = null
-  showStage.value   = true
-  nextTick(() => scrollTo(stageRef.value))
+  isRolling.value   = true
+  rollingRows.value = {
+    a: finalA.map((r, i) => ({ player: r.player, displayAgent: AGENTS[Math.floor(Math.random() * AGENTS.length)], locked: false, index: i })),
+    b: finalB.map((r, i) => ({ player: r.player, displayAgent: AGENTS[Math.floor(Math.random() * AGENTS.length)], locked: false, index: i })),
+  }
+  nextTick(() => scrollTo(rollBtnRef.value))
 
-  setTimeout(() => {
-    showStage.value   = false
-    isRolling.value   = true
-    rollingRows.value = {
-      a: finalA.map((r, i) => ({ player: r.player, displayAgent: AGENTS[Math.floor(Math.random() * AGENTS.length)], locked: false, index: i })),
-      b: finalB.map((r, i) => ({ player: r.player, displayAgent: AGENTS[Math.floor(Math.random() * AGENTS.length)], locked: false, index: i })),
-    }
-    nextTick(() => scrollTo(rollBtnRef.value))
+  const LOCK_BASE     = 1000
+  const LOCK_INTERVAL = 1000
+  const SLOWDOWN_SPAN = 900
+  let lockedCount = 0
+  const totalPlayers = teamA.length + teamB.length
 
-    const LOCK_BASE     = 1000
-    const LOCK_INTERVAL = 1000
-    const SLOWDOWN_SPAN = 900
-    let lockedCount = 0
-    const totalPlayers = teamA.length + teamB.length
+  ;[...finalA.map((f, i) => ({ team: 'a', idx: i, final: f })),
+    ...finalB.map((f, i) => ({ team: 'b', idx: i, final: f }))
+  ].forEach(({ team, idx, final }) => {
+    const lockAt     = LOCK_BASE + idx * LOCK_INTERVAL
+    const slowdownAt = lockAt - SLOWDOWN_SPAN
 
-    ;[...finalA.map((f, i) => ({ team: 'a', idx: i, final: f })),
-      ...finalB.map((f, i) => ({ team: 'b', idx: i, final: f }))
-    ].forEach(({ team, idx, final }) => {
-      const lockAt     = LOCK_BASE + idx * LOCK_INTERVAL
-      const slowdownAt = lockAt - SLOWDOWN_SPAN
-
-      function tick(elapsed) {
-        if (elapsed >= lockAt) {
-          rollingRows.value[team][idx].displayAgent = final.agent
-          rollingRows.value[team][idx].locked = true
-          lockedCount++
-          if (lockedCount === totalPlayers) {
-            setTimeout(() => {
-              results.value     = { a: finalA, b: finalB }
-              rollingRows.value = null
-              isRolling.value   = false
-              nextTick(() => scrollTo(resultAreaRef.value))
-            }, 350)
-          }
-          return
+    function tick(elapsed) {
+      if (elapsed >= lockAt) {
+        rollingRows.value[team][idx].displayAgent = final.agent
+        rollingRows.value[team][idx].locked = true
+        lockedCount++
+        if (lockedCount === totalPlayers) {
+          setTimeout(() => {
+            results.value     = { a: finalA, b: finalB }
+            rollingRows.value = null
+            isRolling.value   = false
+            nextTick(() => scrollTo(resultAreaRef.value))
+          }, 350)
         }
-        rollingRows.value[team][idx].displayAgent = AGENTS[Math.floor(Math.random() * AGENTS.length)]
-        const delay = elapsed < slowdownAt
-          ? 50
-          : 50 + Math.pow((elapsed - slowdownAt) / SLOWDOWN_SPAN, 1.8) * 450
-        setTimeout(() => tick(elapsed + delay), delay)
+        return
       }
-      tick(0)
-    })
-  }, 1800)
+      rollingRows.value[team][idx].displayAgent = AGENTS[Math.floor(Math.random() * AGENTS.length)]
+      const delay = elapsed < slowdownAt
+        ? 50
+        : 50 + Math.pow((elapsed - slowdownAt) / SLOWDOWN_SPAN, 1.8) * 450
+      setTimeout(() => tick(elapsed + delay), delay)
+    }
+    tick(0)
+  })
 }
 </script>
 
@@ -323,39 +310,17 @@ function rollAgents() {
 
     <div v-if="error" class="notice">{{ error }}</div>
 
-    <button class="btn-primary" ref="rollBtnRef" @click="rollAgents" :disabled="isRolling || showStage">
-      {{ showStage ? '⚡ LOADING...' : isRolling ? '⚡ ROLLING...' : '⚡ 抽選開始' }}
+    <button class="btn-primary" ref="rollBtnRef" @click="rollAgents" :disabled="isRolling">
+      {{ isRolling ? '⚡ ROLLING...' : '⚡ 抽選開始' }}
     </button>
-
-    <!-- 抽選演出ステージ -->
-    <Transition name="roll-stage">
-      <div v-if="showStage" class="roll-stage" ref="stageRef">
-        <div class="roll-stage__scanline"></div>
-        <div class="roll-stage__title">
-          AGENT
-          <span class="roll-stage__title-sub">DRAFT</span>
-        </div>
-        <div class="roll-stage__teams">
-          <span class="roll-stage__team--a">{{ teamAName }}</span>
-          <span class="roll-stage__vs">VS</span>
-          <span class="roll-stage__team--b">{{ teamBName }}</span>
-        </div>
-        <div class="roll-stage__chips">
-          <span
-            v-for="(p, i) in [...teamA, ...teamB]" :key="i"
-            class="roll-stage__chip"
-            :style="{ animationDelay: `${i * 90}ms` }"
-          >{{ p.name || p.placeholder }}</span>
-        </div>
-        <div class="roll-stage__progress-wrap">
-          <div class="roll-stage__progress"></div>
-        </div>
-      </div>
-    </Transition>
 
     <!-- ルーレット中 -->
     <div v-if="rollingRows" class="result-area" ref="rollingAreaRef">
-      <div class="result-title">— ROLLING —</div>
+      <div class="rolling-label">
+        <span class="rolling-label__dot"></span>
+        AGENT DRAFT IN PROGRESS
+        <span class="rolling-label__dot"></span>
+      </div>
       <div class="match-grid">
         <div class="match-team">
           <div class="match-team__label match-team__label--a">{{ teamAName }}</div>

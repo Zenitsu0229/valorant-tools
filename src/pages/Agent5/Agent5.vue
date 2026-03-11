@@ -25,8 +25,6 @@ const rollBtnRef     = ref(null)
 const rollingAreaRef = ref(null)
 const resultAreaRef  = ref(null)
 const playerListRef  = ref(null)
-const stageRef       = ref(null)
-const showStage      = ref(false)
 
 function focusNextInput(idx) {
   const inputs = playerListRef.value?.querySelectorAll('input[type="text"]')
@@ -85,7 +83,7 @@ function getPool(player, usedNames = []) {
 
 // --- ランダム割り振り ---
 function rollAgents() {
-  if (isRolling.value || showStage.value) return
+  if (isRolling.value) return
 
   const usedNames = []
   const finalTeam = team.map(p => {
@@ -96,52 +94,45 @@ function rollAgents() {
   })
 
   results.value     = null
-  rollingRows.value = null
-  showStage.value   = true
-  nextTick(() => scrollTo(stageRef.value))
+  isRolling.value   = true
+  rollingRows.value = finalTeam.map((r, i) => ({
+    player: r.player,
+    displayAgent: AGENTS[Math.floor(Math.random() * AGENTS.length)],
+    locked: false,
+    index: i,
+  }))
+  nextTick(() => scrollTo(rollBtnRef.value))
 
-  setTimeout(() => {
-    showStage.value   = false
-    isRolling.value   = true
-    rollingRows.value = finalTeam.map((r, i) => ({
-      player: r.player,
-      displayAgent: AGENTS[Math.floor(Math.random() * AGENTS.length)],
-      locked: false,
-      index: i,
-    }))
-    nextTick(() => scrollTo(rollBtnRef.value))
+  const LOCK_BASE     = 1000
+  const LOCK_INTERVAL = 1000
+  const SLOWDOWN_SPAN = 900
 
-    const LOCK_BASE     = 1000
-    const LOCK_INTERVAL = 1000
-    const SLOWDOWN_SPAN = 900
+  finalTeam.forEach((final, idx) => {
+    const lockAt     = LOCK_BASE + idx * LOCK_INTERVAL
+    const slowdownAt = lockAt - SLOWDOWN_SPAN
 
-    finalTeam.forEach((final, idx) => {
-      const lockAt     = LOCK_BASE + idx * LOCK_INTERVAL
-      const slowdownAt = lockAt - SLOWDOWN_SPAN
-
-      function tick(elapsed) {
-        if (elapsed >= lockAt) {
-          rollingRows.value[idx].displayAgent = final.agent
-          rollingRows.value[idx].locked = true
-          if (rollingRows.value.every(r => r.locked)) {
-            setTimeout(() => {
-              results.value     = finalTeam
-              rollingRows.value = null
-              isRolling.value   = false
-              nextTick(() => scrollTo(resultAreaRef.value))
-            }, 350)
-          }
-          return
+    function tick(elapsed) {
+      if (elapsed >= lockAt) {
+        rollingRows.value[idx].displayAgent = final.agent
+        rollingRows.value[idx].locked = true
+        if (rollingRows.value.every(r => r.locked)) {
+          setTimeout(() => {
+            results.value     = finalTeam
+            rollingRows.value = null
+            isRolling.value   = false
+            nextTick(() => scrollTo(resultAreaRef.value))
+          }, 350)
         }
-        rollingRows.value[idx].displayAgent = AGENTS[Math.floor(Math.random() * AGENTS.length)]
-        const delay = elapsed < slowdownAt
-          ? 50
-          : 50 + Math.pow((elapsed - slowdownAt) / SLOWDOWN_SPAN, 1.8) * 450
-        setTimeout(() => tick(elapsed + delay), delay)
+        return
       }
-      tick(0)
-    })
-  }, 1800)
+      rollingRows.value[idx].displayAgent = AGENTS[Math.floor(Math.random() * AGENTS.length)]
+      const delay = elapsed < slowdownAt
+        ? 50
+        : 50 + Math.pow((elapsed - slowdownAt) / SLOWDOWN_SPAN, 1.8) * 450
+      setTimeout(() => tick(elapsed + delay), delay)
+    }
+    tick(0)
+  })
 }
 </script>
 
@@ -200,35 +191,17 @@ function rollAgents() {
       </div>
     </div>
 
-    <button class="btn-primary" ref="rollBtnRef" @click="rollAgents" :disabled="isRolling || showStage">
-      {{ showStage ? '⚡ LOADING...' : isRolling ? '⚡ ROLLING...' : '⚡ 抽選開始' }}
+    <button class="btn-primary" ref="rollBtnRef" @click="rollAgents" :disabled="isRolling">
+      {{ isRolling ? '⚡ ROLLING...' : '⚡ 抽選開始' }}
     </button>
-
-    <!-- 抽選演出ステージ -->
-    <Transition name="roll-stage">
-      <div v-if="showStage" class="roll-stage" ref="stageRef">
-        <div class="roll-stage__scanline"></div>
-        <div class="roll-stage__title">
-          AGENT
-          <span class="roll-stage__title-sub">SELECT</span>
-        </div>
-        <div class="roll-stage__sub">ASSIGNING AGENTS TO TEAM</div>
-        <div class="roll-stage__chips">
-          <span
-            v-for="(p, i) in team" :key="i"
-            class="roll-stage__chip"
-            :style="{ animationDelay: `${i * 130}ms` }"
-          >{{ p.name || p.placeholder }}</span>
-        </div>
-        <div class="roll-stage__progress-wrap">
-          <div class="roll-stage__progress"></div>
-        </div>
-      </div>
-    </Transition>
 
     <!-- ルーレット中 -->
     <div v-if="rollingRows" class="result-area" ref="rollingAreaRef">
-      <div class="result-title">— ROLLING —</div>
+      <div class="rolling-label">
+        <span class="rolling-label__dot"></span>
+        ASSIGNING AGENTS
+        <span class="rolling-label__dot"></span>
+      </div>
       <div class="a5-rolling-grid">
         <div
           v-for="row in rollingRows" :key="row.index"
