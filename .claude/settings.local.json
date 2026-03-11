@@ -6,7 +6,8 @@
       "WebFetch(domain:tk-production.xyz)",
       "Bash(cd D:/02_project/valorant-tools && npm run build 2>&1)",
       "WebSearch",
-      "WebFetch(domain:support-valorant.riotgames.com)"
+      "WebFetch(domain:support-valorant.riotgames.com)",
+      "Bash(cd \"D:\\\\02_project\\\\valorant-tools\" && npm install @emailjs/browser)"
     ]
   }
 }

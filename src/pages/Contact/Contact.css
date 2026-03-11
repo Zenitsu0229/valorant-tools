@@ -38,6 +38,69 @@
   letter-spacing: 0.5px;
 }
 
+/* ===== 確認画面 ===== */
+.contact-confirm {
+  padding: 0;
+  overflow: hidden;
+}
+
+.confirm-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.confirm-row {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 0 16px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.confirm-row:last-child { border-bottom: none; }
+
+.confirm-label {
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  padding-top: 2px;
+}
+
+.confirm-value {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.7;
+  word-break: break-all;
+}
+
+.confirm-row--message { align-items: start; }
+.confirm-value--message { white-space: pre-wrap; }
+
+.confirm-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.confirm-actions__send { flex: 1; }
+
+.btn-secondary {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  padding: 14px 24px;
+  text-transform: uppercase;
+  transition: border-color 0.2s, color 0.2s;
+  white-space: nowrap;
+}
+.btn-secondary:hover { border-color: var(--text); color: var(--text); }
+
 /* ===== 送信完了 ===== */
 .contact-done {
   display: flex;
