@@ -28,21 +28,31 @@ function rollMap() {
 <template>
   <div>
     <h1 class="section-title">マップ ランダム選択</h1>
-    <p class="section-desc">
-      除外するマップをタップして、残りからランダムに1つ選びます
-    </p>
+    <p class="section-desc">除外するマップをクリックして、残りからランダムに1つ選びます</p>
 
-    <!-- マップ選択 -->
-    <div class="card">
-      <div class="input-label" style="margin-bottom: 12px">除外するマップ（タップで除外）</div>
-      <div class="map-grid">
-        <div
-          v-for="map in maps"
-          :key="map.name"
-          class="map-chip"
-          :class="{ 'map-chip--excluded': map.excluded }"
-          @click="toggleMap(map.name)"
-        >{{ map.name }}</div>
+    <!-- マップカードグリッド -->
+    <div class="map-grid">
+      <div
+        v-for="map in maps"
+        :key="map.name"
+        class="map-card"
+        :class="{ 'map-card--excluded': map.excluded }"
+        @click="toggleMap(map.name)"
+      >
+        <!-- スプラッシュ背景 -->
+        <img class="map-card__img" :src="map.splash" :alt="map.name" loading="lazy" />
+
+        <!-- 除外オーバーレイ -->
+        <div class="map-card__overlay" />
+
+        <!-- 除外バッジ -->
+        <div v-if="map.excluded" class="map-card__excluded-badge">EXCLUDED</div>
+
+        <!-- テキスト -->
+        <div class="map-card__info">
+          <div class="map-card__name">{{ map.name }}</div>
+          <div class="map-card__sub">{{ map.sub }}</div>
+        </div>
       </div>
     </div>
 
@@ -55,10 +65,14 @@ function rollMap() {
     <!-- 結果 -->
     <div v-if="result" class="result-area">
       <div class="result-title">— 結果 —</div>
-      <div class="map-result-big" :key="resultKey">
-        <div class="map-result-big__label">TODAY'S MAP</div>
-        <div class="map-result-big__name">{{ result.name }}</div>
-        <div class="map-result-big__sub">{{ result.sub }}</div>
+      <div class="map-result" :key="resultKey">
+        <img class="map-result__img" :src="result.splash" :alt="result.name" />
+        <div class="map-result__overlay" />
+        <div class="map-result__content">
+          <div class="map-result__label">TODAY'S MAP</div>
+          <div class="map-result__name">{{ result.name }}</div>
+          <div class="map-result__sub">{{ result.sub }}</div>
+        </div>
       </div>
     </div>
   </div>
