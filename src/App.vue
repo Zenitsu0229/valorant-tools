@@ -1,8 +1,11 @@
 <script setup>
 import { ref } from 'vue'
+import { inject } from '@vercel/analytics'
 import Agent5   from './pages/Agent5/Agent5.vue'
 import Agent5v5 from './pages/Agent5v5/Agent5v5.vue'
 import Map      from './pages/Map/Map.vue'
+
+inject()
 
 const tabs = [
   { key: 'agent5',   label: 'competitive' },
