@@ -29,12 +29,15 @@ const rollingRows = ref(null)
 const isRolling   = ref(false)
 const error       = ref('')
 
+const rollBtnRef     = ref(null)
 const rollingAreaRef = ref(null)
 const resultAreaRef  = ref(null)
 
 function scrollTo(el) {
   if (!el) return
-  el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  const headerH = document.querySelector('.sticky-top')?.offsetHeight ?? 0
+  const top = el.getBoundingClientRect().top + window.scrollY - headerH - 12
+  window.scrollTo({ top, behavior: 'smooth' })
 }
 
 // --- ロール操作 ---
@@ -94,7 +97,7 @@ function rollAgents() {
     a: finalA.map((r, i) => ({ player: r.player, displayAgent: AGENTS[Math.floor(Math.random() * AGENTS.length)], locked: false, index: i })),
     b: finalB.map((r, i) => ({ player: r.player, displayAgent: AGENTS[Math.floor(Math.random() * AGENTS.length)], locked: false, index: i })),
   }
-  nextTick(() => scrollTo(rollingAreaRef.value))
+  nextTick(() => scrollTo(rollBtnRef.value))
 
   const LOCK_BASE     = 1000
   const LOCK_INTERVAL = 1000
@@ -233,7 +236,7 @@ function rollAgents() {
 
     <div v-if="error" class="notice">{{ error }}</div>
 
-    <button class="btn-primary" @click="rollAgents" :disabled="isRolling">
+    <button class="btn-primary" ref="rollBtnRef" @click="rollAgents" :disabled="isRolling">
       {{ isRolling ? '⚡ ROLLING...' : '⚡ 抽選開始' }}
     </button>
 

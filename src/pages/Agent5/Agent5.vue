@@ -20,12 +20,15 @@ const rollingRows = ref(null)
 const isRolling   = ref(false)
 
 const banBoardRef    = ref(null)
+const rollBtnRef     = ref(null)
 const rollingAreaRef = ref(null)
 const resultAreaRef  = ref(null)
 
 function scrollTo(el) {
   if (!el) return
-  el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  const headerH = document.querySelector('.sticky-top')?.offsetHeight ?? 0
+  const top = el.getBoundingClientRect().top + window.scrollY - headerH - 12
+  window.scrollTo({ top, behavior: 'smooth' })
 }
 
 const activePreset = ref(null)
@@ -80,7 +83,7 @@ function rollAgents() {
     locked: false,
     index: i,
   }))
-  nextTick(() => scrollTo(rollingAreaRef.value))
+  nextTick(() => scrollTo(rollBtnRef.value))
 
   const LOCK_BASE     = 1000
   const LOCK_INTERVAL = 1000
@@ -164,7 +167,7 @@ function rollAgents() {
       </div>
     </div>
 
-    <button class="btn-primary" @click="rollAgents" :disabled="isRolling">
+    <button class="btn-primary" ref="rollBtnRef" @click="rollAgents" :disabled="isRolling">
       {{ isRolling ? '⚡ ROLLING...' : '⚡ 抽選開始' }}
     </button>
 
