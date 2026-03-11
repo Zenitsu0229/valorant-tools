@@ -21,6 +21,8 @@ const teamB = reactive(Array.from({ length: TEAM_SIZE }, (_, i) => makePlayer(i 
 
 const banBoardRefA = ref(null)
 const banBoardRefB = ref(null)
+const activePresetA = ref(null)
+const activePresetB = ref(null)
 
 const results     = ref(null)
 const rollingRows = ref(null)
@@ -36,18 +38,22 @@ function scrollTo(el) {
 }
 
 // --- ロール操作 ---
-function toggleRole(player, roleKey) {
+function toggleRole(player, roleKey, teamKey) {
   const r = player.roles.find(r => r.key === roleKey)
   if (r) r.active = !r.active
+  if (teamKey === 'a') activePresetA.value = null
+  else                 activePresetB.value = null
 }
 
-function applyPreset(team, preset) {
+function applyPreset(team, preset, teamKey) {
   team.forEach((player, i) => {
     const assigned = preset.roles[i]
     player.roles.forEach(r => {
       r.active = assigned === null ? false : r.key === assigned
     })
   })
+  if (teamKey === 'a') activePresetA.value = preset.key
+  else                 activePresetB.value = preset.key
 }
 
 // --- プレイヤーのプール取得 ---
@@ -145,31 +151,34 @@ function rollAgents() {
             <button
               v-for="p in ROLE_PRESETS" :key="p.key"
               class="preset-btn"
-              :class="{ 'preset-btn--clr': p.key === 'clr' }"
+              :class="{ 'preset-btn--clr': p.key === 'clr', 'preset-btn--active': activePresetA === p.key }"
               :title="p.desc"
               :disabled="isRolling"
-              @click="applyPreset(teamA, p)"
+              @click="applyPreset(teamA, p, 'a')"
             >{{ p.label }}</button>
           </div>
         </div>
         <AgentBanBoard ref="banBoardRefA" :disabled="isRolling" />
         <div class="player-list">
           <div v-for="(player, idx) in teamA" :key="idx" class="player-block">
-            <input
-              class="player-row__input"
-              type="text"
-              :placeholder="player.placeholder"
-              maxlength="20"
-              v-model="player.name"
-              :disabled="isRolling"
-            />
-            <div class="player-role-row">
-              <div
-                v-for="role in player.roles" :key="role.key"
-                class="player-role-chip"
-                :class="[`player-role-chip--${role.key}`, { 'player-role-chip--active': role.active }]"
-                @click="toggleRole(player, role.key)"
-              >{{ role.label }}</div>
+            <span class="player-num">{{ String(idx + 1).padStart(2, '0') }}</span>
+            <div class="player-block__inner">
+              <input
+                class="player-row__input"
+                type="text"
+                :placeholder="player.placeholder"
+                maxlength="20"
+                v-model="player.name"
+                :disabled="isRolling"
+              />
+              <div class="player-role-row">
+                <div
+                  v-for="role in player.roles" :key="role.key"
+                  class="player-role-chip"
+                  :class="[`player-role-chip--${role.key}`, { 'player-role-chip--active': role.active }]"
+                  @click="!isRolling && toggleRole(player, role.key, 'a')"
+                >{{ role.label }}</div>
+              </div>
             </div>
           </div>
         </div>
@@ -187,31 +196,34 @@ function rollAgents() {
             <button
               v-for="p in ROLE_PRESETS" :key="p.key"
               class="preset-btn"
-              :class="{ 'preset-btn--clr': p.key === 'clr' }"
+              :class="{ 'preset-btn--clr': p.key === 'clr', 'preset-btn--active': activePresetB === p.key }"
               :title="p.desc"
               :disabled="isRolling"
-              @click="applyPreset(teamB, p)"
+              @click="applyPreset(teamB, p, 'b')"
             >{{ p.label }}</button>
           </div>
         </div>
         <AgentBanBoard ref="banBoardRefB" :disabled="isRolling" />
         <div class="player-list">
           <div v-for="(player, idx) in teamB" :key="idx" class="player-block">
-            <input
-              class="player-row__input"
-              type="text"
-              :placeholder="player.placeholder"
-              maxlength="20"
-              v-model="player.name"
-              :disabled="isRolling"
-            />
-            <div class="player-role-row">
-              <div
-                v-for="role in player.roles" :key="role.key"
-                class="player-role-chip"
-                :class="[`player-role-chip--${role.key}`, { 'player-role-chip--active': role.active }]"
-                @click="toggleRole(player, role.key)"
-              >{{ role.label }}</div>
+            <span class="player-num">{{ String(idx + 1).padStart(2, '0') }}</span>
+            <div class="player-block__inner">
+              <input
+                class="player-row__input"
+                type="text"
+                :placeholder="player.placeholder"
+                maxlength="20"
+                v-model="player.name"
+                :disabled="isRolling"
+              />
+              <div class="player-role-row">
+                <div
+                  v-for="role in player.roles" :key="role.key"
+                  class="player-role-chip"
+                  :class="[`player-role-chip--${role.key}`, { 'player-role-chip--active': role.active }]"
+                  @click="!isRolling && toggleRole(player, role.key, 'b')"
+                >{{ role.label }}</div>
+              </div>
             </div>
           </div>
         </div>

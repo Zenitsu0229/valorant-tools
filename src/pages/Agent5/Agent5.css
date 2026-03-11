@@ -64,6 +64,11 @@
   border-color: var(--text-dim);
   color: var(--text);
 }
+.preset-btn--active {
+  background: rgba(255, 70, 85, 0.12);
+  border-color: var(--red);
+  color: var(--red);
+}
 .preset-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
 /* ===== 縦カード ルーレット ===== */

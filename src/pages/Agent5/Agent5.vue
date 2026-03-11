@@ -28,10 +28,13 @@ function scrollTo(el) {
   el.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
 
+const activePreset = ref(null)
+
 // --- ロール操作 ---
 function toggleRole(player, roleKey) {
   const r = player.roles.find(r => r.key === roleKey)
   if (r) r.active = !r.active
+  activePreset.value = null
 }
 
 function applyPreset(preset) {
@@ -41,6 +44,7 @@ function applyPreset(preset) {
       r.active = assigned === null ? false : r.key === assigned
     })
   })
+  activePreset.value = preset.key
 }
 
 // --- プレイヤーのプール取得 ---
@@ -128,7 +132,7 @@ function rollAgents() {
           <button
             v-for="p in ROLE_PRESETS" :key="p.key"
             class="preset-btn"
-            :class="{ 'preset-btn--clr': p.key === 'clr' }"
+            :class="{ 'preset-btn--clr': p.key === 'clr', 'preset-btn--active': activePreset === p.key }"
             :title="p.desc"
             :disabled="isRolling"
             @click="applyPreset(p)"
@@ -137,21 +141,24 @@ function rollAgents() {
       </div>
       <div class="player-list">
         <div v-for="(player, idx) in team" :key="idx" class="player-block">
-          <input
-            class="player-row__input"
-            type="text"
-            :placeholder="player.placeholder"
-            maxlength="20"
-            v-model="player.name"
-            :disabled="isRolling"
-          />
-          <div class="player-role-row">
-            <div
-              v-for="role in player.roles" :key="role.key"
-              class="player-role-chip"
-              :class="[`player-role-chip--${role.key}`, { 'player-role-chip--active': role.active }]"
-              @click="toggleRole(player, role.key)"
-            >{{ role.label }}</div>
+          <span class="player-num">{{ String(idx + 1).padStart(2, '0') }}</span>
+          <div class="player-block__inner">
+            <input
+              class="player-row__input"
+              type="text"
+              :placeholder="player.placeholder"
+              maxlength="20"
+              v-model="player.name"
+              :disabled="isRolling"
+            />
+            <div class="player-role-row">
+              <div
+                v-for="role in player.roles" :key="role.key"
+                class="player-role-chip"
+                :class="[`player-role-chip--${role.key}`, { 'player-role-chip--active': role.active }]"
+                @click="!isRolling && toggleRole(player, role.key)"
+              >{{ role.label }}</div>
+            </div>
           </div>
         </div>
       </div>
