@@ -8,10 +8,10 @@ export const ROLE_LABELS = {
 
 /** フィルターチップの初期状態 */
 export const ROLES_INIT = [
-  { key: 'duelist',    label: 'デュエリスト',   active: true },
-  { key: 'initiator',  label: 'イニシエーター',  active: true },
-  { key: 'controller', label: 'コントローラー',  active: true },
-  { key: 'sentinel',   label: 'センチネル',      active: true },
+  { key: 'duelist',    label: 'デュエリスト',   active: false },
+  { key: 'initiator',  label: 'イニシエーター',  active: false },
+  { key: 'controller', label: 'コントローラー',  active: false },
+  { key: 'sentinel',   label: 'センチネル',      active: false },
 ]
 
 /** プレイヤーの最大人数 */

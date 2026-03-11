@@ -269,21 +269,28 @@ main {
 .player-role-chip {
   font-size: 10px;
   letter-spacing: 1px;
-  padding: 2px 8px;
+  padding: 3px 10px;
   border-radius: 2px;
   border: 1px solid var(--border);
   background: var(--bg3);
-  color: var(--text-dim);
+  color: var(--text);
   cursor: pointer;
   text-transform: uppercase;
   transition: all 0.15s;
   user-select: none;
-  opacity: 0.5;
 }
-.player-role-chip--active.player-role-chip--duelist    { background: rgba(255,70,85,0.2);   border-color: #ff6b77; color: #ff6b77;  opacity: 1; }
-.player-role-chip--active.player-role-chip--initiator  { background: rgba(255,165,0,0.2);   border-color: #ffb347; color: #ffb347; opacity: 1; }
-.player-role-chip--active.player-role-chip--controller { background: rgba(100,200,255,0.2); border-color: #7dd3fc; color: #7dd3fc; opacity: 1; }
-.player-role-chip--active.player-role-chip--sentinel   { background: rgba(100,255,150,0.2); border-color: #6ee7b7; color: #6ee7b7; opacity: 1; }
+
+/* ホバー時：ロールカラーをほんのり予告 */
+.player-role-chip--duelist:hover    { border-color: #ff6b77; color: #ff6b77; }
+.player-role-chip--initiator:hover  { border-color: #ffb347; color: #ffb347; }
+.player-role-chip--controller:hover { border-color: #7dd3fc; color: #7dd3fc; }
+.player-role-chip--sentinel:hover   { border-color: #6ee7b7; color: #6ee7b7; }
+
+/* 選択中 */
+.player-role-chip--active.player-role-chip--duelist    { background: rgba(255,70,85,0.2);   border-color: #ff6b77; color: #ff6b77; }
+.player-role-chip--active.player-role-chip--initiator  { background: rgba(255,165,0,0.2);   border-color: #ffb347; color: #ffb347; }
+.player-role-chip--active.player-role-chip--controller { background: rgba(100,200,255,0.2); border-color: #7dd3fc; color: #7dd3fc; }
+.player-role-chip--active.player-role-chip--sentinel   { background: rgba(100,255,150,0.2); border-color: #6ee7b7; color: #6ee7b7; }
 
 .player-role-bulk-btns { display: flex; gap: 4px; }
 .player-role-bulk-btn {
@@ -495,6 +502,116 @@ main {
   z-index: 2;
 }
 
+/* ===== FOOTER ===== */
+.site-footer {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  padding: 28px 32px 20px;
+  margin-top: 60px;
+}
+
+.site-footer__inner {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px 40px;
+  align-items: flex-start;
+}
+
+.footer-section__title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 12px;
+}
+
+/* SNS */
+.footer-sns {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.footer-sns__link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+  text-decoration: none;
+}
+
+.footer-sns__link:hover {
+  color: var(--red);
+  border-color: var(--red);
+  background: rgba(255, 70, 85, 0.08);
+}
+
+.footer-sns__icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* 区切り */
+.footer-divider {
+  width: 100%;
+  height: 1px;
+  background: var(--border);
+}
+
+/* リーガル */
+.footer-section--legal {
+  width: 100%;
+}
+
+.footer-legal {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.footer-legal__link {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  color: var(--text-dim);
+  text-decoration: none;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.footer-legal__link:hover {
+  color: var(--text);
+}
+
+.footer-legal__sep {
+  font-size: 11px;
+  color: var(--border);
+  padding: 0 2px;
+}
+
+.footer-copy {
+  font-size: 10px;
+  color: var(--text-dim);
+  opacity: 0.6;
+  letter-spacing: 0.5px;
+  line-height: 1.6;
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 600px) {
   .header {
@@ -509,5 +626,11 @@ main {
   .tab-btn {
     padding: 12px 14px;
     font-size: 13px;
+  }
+  .site-footer {
+    padding: 24px 16px 16px;
+  }
+  .site-footer__inner {
+    gap: 20px 24px;
   }
 }

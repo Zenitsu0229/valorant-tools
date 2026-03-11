@@ -5,7 +5,8 @@
       "WebFetch(domain:valorant-api.com)",
       "WebFetch(domain:tk-production.xyz)",
       "Bash(cd D:/02_project/valorant-tools && npm run build 2>&1)",
-      "WebSearch"
+      "WebSearch",
+      "WebFetch(domain:support-valorant.riotgames.com)"
     ]
   }
 }

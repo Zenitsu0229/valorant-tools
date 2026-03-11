@@ -130,10 +130,6 @@ function rollAgents() {
             :disabled="isRolling"
           />
           <div class="player-role-row">
-            <div class="player-role-bulk-btns">
-              <button class="player-role-bulk-btn" @click="setAllRoles(player, true)" :disabled="isRolling">全ON</button>
-              <button class="player-role-bulk-btn player-role-bulk-btn--off" @click="setAllRoles(player, false)" :disabled="isRolling">全OFF</button>
-            </div>
             <div
               v-for="role in player.roles" :key="role.key"
               class="player-role-chip"

@@ -2,6 +2,7 @@
 import { ref, reactive, nextTick } from 'vue'
 import { AGENTS } from '../../constants/agents'
 import { ROLE_LABELS, ROLES_INIT } from '../../constants/roles'
+import AgentBanBoard from '../../components/AgentBanBoard.vue'
 import './Agent5v5.css'
 
 const TEAM_SIZE = 5
@@ -17,6 +18,9 @@ const teamAName = ref('TEAM A')
 const teamBName = ref('TEAM B')
 const teamA = reactive(Array.from({ length: TEAM_SIZE }, (_, i) => makePlayer(i + 1)))
 const teamB = reactive(Array.from({ length: TEAM_SIZE }, (_, i) => makePlayer(i + 1)))
+
+const banBoardRefA = ref(null)
+const banBoardRefB = ref(null)
 
 const noDuplicate = ref(true)
 const results     = ref(null)
@@ -37,17 +41,16 @@ function toggleRole(player, roleKey) {
   const r = player.roles.find(r => r.key === roleKey)
   if (r) r.active = !r.active
 }
-function setAllRoles(player, active) {
-  player.roles.forEach(r => { r.active = active })
-}
 
 // --- プレイヤーのプール取得 ---
-function getPool(player, usedNames = []) {
+function getPool(player, banned, usedNames = []) {
   const activeKeys = player.roles.filter(r => r.active).map(r => r.key)
-  let pool = AGENTS.filter(a => activeKeys.includes(a.role))
+  let pool = AGENTS.filter(a => activeKeys.includes(a.role) && !banned.has(a.name))
+  if (pool.length === 0) pool = AGENTS.filter(a => !banned.has(a.name))
   if (pool.length === 0) pool = [...AGENTS]
   if (noDuplicate.value) pool = pool.filter(a => !usedNames.includes(a.name))
   if (pool.length === 0) pool = AGENTS.filter(a => activeKeys.includes(a.role))
+  if (pool.length === 0) pool = [...AGENTS]
   return pool
 }
 
@@ -56,17 +59,20 @@ function rollAgents() {
   if (isRolling.value) return
   error.value = ''
 
+  const bannedA = banBoardRefA.value?.banned ?? new Set()
+  const bannedB = banBoardRefB.value?.banned ?? new Set()
+
   const usedNames = []
-  const calcTeam = (team) =>
+  const calcTeam = (team, banned) =>
     team.map(p => {
-      const pool  = getPool(p, usedNames)
+      const pool  = getPool(p, banned, usedNames)
       const agent = pool[Math.floor(Math.random() * pool.length)]
       if (noDuplicate.value) usedNames.push(agent.name)
       return { player: p.name.trim() || p.placeholder, agent }
     })
 
-  const finalA = calcTeam(teamA)
-  const finalB = calcTeam(teamB)
+  const finalA = calcTeam(teamA, bannedA)
+  const finalB = calcTeam(teamB, bannedB)
 
   isRolling.value   = true
   results.value     = null
@@ -128,6 +134,7 @@ function rollAgents() {
           <span class="team-card__dot team-card__dot--a"></span>
           <input class="team-card__name-input" v-model="teamAName" maxlength="12" :disabled="isRolling" />
         </div>
+        <AgentBanBoard ref="banBoardRefA" :disabled="isRolling" />
         <div class="player-list">
           <div v-for="(player, idx) in teamA" :key="idx" class="player-block">
             <input
@@ -139,10 +146,6 @@ function rollAgents() {
               :disabled="isRolling"
             />
             <div class="player-role-row">
-              <div class="player-role-bulk-btns">
-                <button class="player-role-bulk-btn" @click="setAllRoles(player, true)" :disabled="isRolling">全ON</button>
-                <button class="player-role-bulk-btn player-role-bulk-btn--off" @click="setAllRoles(player, false)" :disabled="isRolling">全OFF</button>
-              </div>
               <div
                 v-for="role in player.roles" :key="role.key"
                 class="player-role-chip"
@@ -163,6 +166,7 @@ function rollAgents() {
           <span class="team-card__dot team-card__dot--b"></span>
           <input class="team-card__name-input" v-model="teamBName" maxlength="12" :disabled="isRolling" />
         </div>
+        <AgentBanBoard ref="banBoardRefB" :disabled="isRolling" />
         <div class="player-list">
           <div v-for="(player, idx) in teamB" :key="idx" class="player-block">
             <input
@@ -174,10 +178,6 @@ function rollAgents() {
               :disabled="isRolling"
             />
             <div class="player-role-row">
-              <div class="player-role-bulk-btns">
-                <button class="player-role-bulk-btn" @click="setAllRoles(player, true)" :disabled="isRolling">全ON</button>
-                <button class="player-role-bulk-btn player-role-bulk-btn--off" @click="setAllRoles(player, false)" :disabled="isRolling">全OFF</button>
-              </div>
               <div
                 v-for="role in player.roles" :key="role.key"
                 class="player-role-chip"
@@ -209,7 +209,6 @@ function rollAgents() {
     <div v-if="rollingRows" class="result-area" ref="rollingAreaRef">
       <div class="result-title">— ROLLING —</div>
       <div class="match-grid">
-        <!-- Team A -->
         <div class="match-team">
           <div class="match-team__label match-team__label--a">{{ teamAName }}</div>
           <div class="rolling-col">
@@ -230,10 +229,8 @@ function rollAgents() {
           </div>
         </div>
 
-        <!-- VS -->
         <div class="match-vs">VS</div>
 
-        <!-- Team B -->
         <div class="match-team">
           <div class="match-team__label match-team__label--b">{{ teamBName }}</div>
           <div class="rolling-col">
@@ -260,7 +257,6 @@ function rollAgents() {
     <div v-if="results && !isRolling" class="result-area" ref="resultAreaRef">
       <div class="result-title">— 結果 —</div>
       <div class="match-grid">
-        <!-- Team A -->
         <div class="match-team">
           <div class="match-team__label match-team__label--a">{{ teamAName }}</div>
           <div class="result-col">
@@ -282,10 +278,8 @@ function rollAgents() {
           </div>
         </div>
 
-        <!-- VS -->
         <div class="match-vs">VS</div>
 
-        <!-- Team B -->
         <div class="match-team">
           <div class="match-team__label match-team__label--b">{{ teamBName }}</div>
           <div class="result-col">

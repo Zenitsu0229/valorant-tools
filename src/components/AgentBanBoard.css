@@ -13,6 +13,30 @@
   justify-content: space-between;
   padding: 12px 16px;
   border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s;
+}
+.ban-board__header:hover {
+  background: rgba(255,255,255,0.03);
+}
+
+.ban-board__header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ban-board__chevron {
+  width: 14px;
+  height: 14px;
+  color: var(--text-dim);
+  flex-shrink: 0;
+  transform: rotate(0deg);
+  transition: transform 0.25s ease;
+}
+.ban-board__chevron--open {
+  transform: rotate(180deg);
 }
 
 .ban-board__title {
@@ -55,7 +79,18 @@
 .ban-board__clear:hover { border-color: var(--red); color: var(--red); }
 .ban-board__clear:disabled { opacity: 0.3; cursor: not-allowed; }
 
+/* アコーディオン */
+.ban-board__body-wrap {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 0.28s ease;
+}
+.ban-board__body-wrap--closed {
+  grid-template-rows: 0fr;
+}
+
 .ban-board__body {
+  overflow: hidden;
   padding: 12px 16px 16px;
   display: flex;
   flex-direction: column;
