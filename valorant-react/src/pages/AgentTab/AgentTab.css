@@ -1,0 +1,206 @@
+/* ===== PLAYER INPUTS ===== */
+.player-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+/* プレイヤー1人分のブロック（名前行 + ロール行） */
+.player-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 10px 12px;
+}
+
+.player-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* 個別ロールチップ行 */
+.player-role-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.player-role-chip {
+  font-size: 11px;
+  letter-spacing: 1px;
+  padding: 3px 10px;
+  border-radius: 2px;
+  border: 1px solid var(--border);
+  background: var(--bg3);
+  color: var(--text-dim);
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.15s;
+  user-select: none;
+  opacity: 0.5;
+}
+
+/* アクティブ時はロール色で光らせる */
+.player-role-chip--active.player-role-chip--duelist    { background: rgba(255, 70, 85, 0.2);   border-color: #ff6b77; color: #ff6b77;  opacity: 1; }
+.player-role-chip--active.player-role-chip--initiator  { background: rgba(255, 165, 0, 0.2);   border-color: #ffb347; color: #ffb347; opacity: 1; }
+.player-role-chip--active.player-role-chip--controller { background: rgba(100, 200, 255, 0.2); border-color: #7dd3fc; color: #7dd3fc; opacity: 1; }
+.player-role-chip--active.player-role-chip--sentinel   { background: rgba(100, 255, 150, 0.2); border-color: #6ee7b7; color: #6ee7b7; opacity: 1; }
+
+/* 全ON / 全OFF ボタン */
+.player-role-bulk-btns {
+  display: flex;
+  gap: 4px;
+}
+
+.player-role-bulk-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 10px;
+  letter-spacing: 1px;
+  padding: 3px 8px;
+  transition: all 0.15s;
+}
+
+.player-role-bulk-btn:hover {
+  border-color: var(--text-dim);
+  color: var(--text);
+}
+
+.player-role-bulk-btn--off:hover {
+  border-color: var(--red);
+  color: var(--red);
+}
+
+.player-row__input {
+  flex: 1;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--text);
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 14px;
+  padding: 10px 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.player-row__input:focus {
+  border-color: var(--red);
+}
+
+.player-row__input::placeholder {
+  color: var(--text-dim);
+}
+
+.player-row__remove {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 16px;
+  padding: 8px 12px;
+  transition: all 0.2s;
+}
+
+.player-row__remove:hover {
+  border-color: var(--red);
+  color: var(--red);
+}
+
+.player-row__remove:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.add-player-btn {
+  background: none;
+  border: 1px dashed var(--border);
+  border-radius: 3px;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 13px;
+  padding: 10px;
+  width: 100%;
+  transition: all 0.2s;
+}
+
+.add-player-btn:hover {
+  border-color: var(--red);
+  color: var(--red);
+}
+
+.add-player-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ===== AGENT RESULTS ===== */
+.agent-results {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.agent-result-row {
+  display: flex;
+  align-items: center;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 14px 18px;
+  gap: 16px;
+  animation: slideIn 0.3s ease forwards;
+  opacity: 0;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.agent-result-row__player {
+  font-size: 14px;
+  color: var(--text-dim);
+  min-width: 100px;
+}
+
+.agent-result-row__arrow {
+  color: var(--border);
+  font-size: 18px;
+}
+
+.agent-result-row__name {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  flex: 1;
+}
+
+.agent-role {
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 2px;
+}
+
+.agent-role--duelist    { background: rgba(255, 70, 85, 0.2);  color: #ff6b77; }
+.agent-role--initiator  { background: rgba(255, 165, 0, 0.2);  color: #ffb347; }
+.agent-role--controller { background: rgba(100, 200, 255, 0.2); color: #7dd3fc; }
+.agent-role--sentinel   { background: rgba(100, 255, 150, 0.2); color: #6ee7b7; }

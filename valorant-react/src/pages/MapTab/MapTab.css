@@ -1,0 +1,82 @@
+/* ===== MAP GRID ===== */
+.map-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.map-chip {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 13px;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+  letter-spacing: 1px;
+  padding: 10px 14px;
+  text-align: center;
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.map-chip--excluded {
+  background: rgba(255, 70, 85, 0.08);
+  border-color: var(--red);
+  color: var(--red);
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+/* ===== MAP RESULT ===== */
+.map-result-big {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 48px 24px;
+  text-align: center;
+  animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.map-result-big__label {
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.map-result-big__name {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 64px;
+  font-weight: 700;
+  color: var(--red);
+  line-height: 1;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+}
+
+.map-result-big__sub {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-top: 10px;
+}
+
+@media (max-width: 600px) {
+  .map-result-big__name {
+    font-size: 48px;
+  }
+}

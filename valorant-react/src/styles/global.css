@@ -1,0 +1,238 @@
+/* ===== CSS VARIABLES ===== */
+:root {
+  --red: #ff4655;
+  --red-dark: #c0392b;
+  --bg: #0f1923;
+  --bg2: #1a2634;
+  --bg3: #232f3e;
+  --text: #ece8e1;
+  --text-dim: #7a8a99;
+  --border: #2a3f52;
+}
+
+/* ===== RESET ===== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Noto Sans JP', sans-serif;
+  min-height: 100vh;
+}
+
+/* ===== HEADER ===== */
+.header {
+  background: var(--bg2);
+  border-bottom: 2px solid var(--red);
+  padding: 18px 32px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.header__logo {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: var(--text);
+}
+
+.header__logo span {
+  color: var(--red);
+}
+
+.header__badge {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: #61dafb;
+  border: 1px solid #61dafb;
+  padding: 2px 8px;
+  border-radius: 2px;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.header__subtitle {
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* ===== TABS ===== */
+.tabs {
+  display: flex;
+  padding: 0 32px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: var(--text-dim);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  padding: 14px 24px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+}
+
+.tab-btn:hover {
+  color: var(--text);
+}
+
+.tab-btn--active {
+  color: var(--red);
+  border-bottom-color: var(--red);
+}
+
+/* ===== MAIN ===== */
+main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+
+/* ===== SECTION ===== */
+.section-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.section-desc {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-bottom: 28px;
+}
+
+/* ===== CARD ===== */
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+/* ===== LABEL ===== */
+.input-label {
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+/* ===== FILTER CHIP ===== */
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.filter-chip {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 12px;
+  letter-spacing: 1px;
+  padding: 6px 14px;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+.filter-chip--active {
+  background: rgba(255, 70, 85, 0.15);
+  border-color: var(--red);
+  color: var(--red);
+}
+
+/* ===== BUTTON ===== */
+.btn-primary {
+  background: var(--red);
+  border: none;
+  border-radius: 3px;
+  color: white;
+  cursor: pointer;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  padding: 14px 36px;
+  text-transform: uppercase;
+  transition: background 0.2s, transform 0.1s;
+  width: 100%;
+}
+
+.btn-primary:hover {
+  background: var(--red-dark);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+/* ===== NOTICE ===== */
+.notice {
+  background: rgba(255, 70, 85, 0.08);
+  border: 1px solid rgba(255, 70, 85, 0.3);
+  border-radius: 3px;
+  color: #ff8a93;
+  font-size: 12px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+}
+
+/* ===== RESULT AREA ===== */
+.result-area {
+  margin-top: 28px;
+}
+
+.result-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 13px;
+  letter-spacing: 3px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 10px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+  .header {
+    padding: 14px 16px;
+  }
+  .tabs {
+    padding: 0 16px;
+  }
+  main {
+    padding: 24px 16px;
+  }
+  .tab-btn {
+    padding: 12px 14px;
+    font-size: 13px;
+  }
+}

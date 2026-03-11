@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VAL RANDOM – VALORANT ランダムピック (React)</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+  :root {
+    --red: #ff4655;
+    --red-dark: #c0392b;
+    --bg: #0f1923;
+    --bg2: #1a2634;
+    --bg3: #232f3e;
+    --text: #ece8e1;
+    --text-dim: #7a8a99;
+    --accent: #ff4655;
+    --border: #2a3f52;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans JP', sans-serif;
+    min-height: 100vh;
+  }
+
+  header {
+    background: var(--bg2);
+    border-bottom: 2px solid var(--red);
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  header .logo {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: var(--text);
+  }
+  header .logo span { color: var(--red); }
+  header .badge {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: #61dafb;
+    border: 1px solid #61dafb;
+    padding: 2px 8px;
+    border-radius: 2px;
+    text-transform: uppercase;
+    opacity: 0.8;
+  }
+  header .subtitle {
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 0;
+    padding: 0 32px;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+  }
+  .tab-btn {
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: var(--text-dim);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    padding: 14px 24px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active {
+    color: var(--red);
+    border-bottom-color: var(--red);
+  }
+
+  main { max-width: 900px; margin: 0 auto; padding: 40px 24px; }
+
+  .section-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .section-desc {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 28px;
+  }
+
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+
+  .input-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .player-inputs { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+  .player-row { display: flex; gap: 8px; align-items: center; }
+  .player-row input {
+    flex: 1;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--text);
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 14px;
+    padding: 10px 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .player-row input:focus { border-color: var(--red); }
+  .player-row input::placeholder { color: var(--text-dim); }
+  .remove-btn {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 16px;
+    padding: 8px 12px;
+    transition: all 0.2s;
+  }
+  .remove-btn:hover { border-color: var(--red); color: var(--red); }
+  .remove-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  .add-player-btn {
+    background: none;
+    border: 1px dashed var(--border);
+    border-radius: 3px;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 13px;
+    padding: 10px;
+    width: 100%;
+    transition: all 0.2s;
+  }
+  .add-player-btn:hover { border-color: var(--red); color: var(--red); }
+  .add-player-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .filter-chip {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 12px;
+    letter-spacing: 1px;
+    padding: 6px 14px;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    user-select: none;
+  }
+  .filter-chip.active {
+    background: rgba(255,70,85,0.15);
+    border-color: var(--red);
+    color: var(--red);
+  }
+
+  .btn-primary {
+    background: var(--red);
+    border: none;
+    border-radius: 3px;
+    color: white;
+    cursor: pointer;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    padding: 14px 36px;
+    text-transform: uppercase;
+    transition: background 0.2s, transform 0.1s;
+    width: 100%;
+  }
+  .btn-primary:hover { background: var(--red-dark); }
+  .btn-primary:active { transform: scale(0.98); }
+
+  .result-area { margin-top: 28px; }
+
+  .result-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 10px;
+  }
+
+  .agent-results { display: flex; flex-direction: column; gap: 10px; }
+  .agent-result-row {
+    display: flex;
+    align-items: center;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 14px 18px;
+    gap: 16px;
+    animation: slideIn 0.3s ease forwards;
+    opacity: 0;
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-12px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  .player-name-result {
+    font-size: 14px;
+    color: var(--text-dim);
+    min-width: 100px;
+  }
+  .arrow { color: var(--border); font-size: 18px; }
+  .agent-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    flex: 1;
+  }
+  .agent-role {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 2px;
+  }
+  .role-duelist { background: rgba(255,70,85,0.2); color: #ff6b77; }
+  .role-initiator { background: rgba(255,165,0,0.2); color: #ffb347; }
+  .role-controller { background: rgba(100,200,255,0.2); color: #7dd3fc; }
+  .role-sentinel { background: rgba(100,255,150,0.2); color: #6ee7b7; }
+
+  .map-result-big {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 48px 24px;
+    text-align: center;
+    animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  }
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.85); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  .map-result-label {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .map-result-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 64px;
+    font-weight: 700;
+    color: var(--red);
+    line-height: 1;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+  }
+  .map-result-sub {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-top: 10px;
+  }
+
+  .map-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .map-chip {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 13px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    letter-spacing: 1px;
+    padding: 10px 14px;
+    text-align: center;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .map-chip.excluded {
+    background: rgba(255,70,85,0.08);
+    border-color: var(--red);
+    color: var(--red);
+    text-decoration: line-through;
+    opacity: 0.6;
+  }
+
+  .notice {
+    background: rgba(255,70,85,0.08);
+    border: 1px solid rgba(255,70,85,0.3);
+    border-radius: 3px;
+    color: #ff8a93;
+    font-size: 12px;
+    padding: 10px 14px;
+    margin-bottom: 16px;
+  }
+
+  @media (max-width: 600px) {
+    header { padding: 14px 16px; }
+    .tabs { padding: 0 16px; }
+    main { padding: 24px 16px; }
+    .tab-btn { padding: 12px 14px; font-size: 13px; }
+    .map-result-name { font-size: 48px; }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useCallback } = React;
+
+// ===== DATA =====
+const AGENTS = [
+  { name: "ジェット", role: "duelist" },
+  { name: "フェニックス", role: "duelist" },
+  { name: "レイズ", role: "duelist" },
+  { name: "レイナ", role: "duelist" },
+  { name: "ネオン", role: "duelist" },
+  { name: "ヨル", role: "duelist" },
+  { name: "アイソ", role: "duelist" },
+  { name: "ウェイレイ", role: "duelist" },
+  { name: "ソーヴァ", role: "initiator" },
+  { name: "ブリーチ", role: "initiator" },
+  { name: "スカイ", role: "initiator" },
+  { name: "フェイド", role: "initiator" },
+  { name: "ゲッコー", role: "initiator" },
+  { name: "KAY/O", role: "initiator" },
+  { name: "ブリムストーン", role: "controller" },
+  { name: "ヴァイパー", role: "controller" },
+  { name: "オーメン", role: "controller" },
+  { name: "アストラ", role: "controller" },
+  { name: "ハーバー", role: "controller" },
+  { name: "クローヴ", role: "controller" },
+  { name: "キルジョイ", role: "sentinel" },
+  { name: "セージ", role: "sentinel" },
+  { name: "サイファー", role: "sentinel" },
+  { name: "チェンバー", role: "sentinel" },
+  { name: "デッドロック", role: "sentinel" },
+  { name: "ヴァイン", role: "sentinel" },
+];
+
+const MAPS_DATA = [
+  { name: "Ascent", sub: "イタリア / ヴェニス" },
+  { name: "Bind", sub: "モロッコ" },
+  { name: "Haven", sub: "ブータン" },
+  { name: "Split", sub: "日本 / 東京" },
+  { name: "Icebox", sub: "ロシア / 北極" },
+  { name: "Breeze", sub: "カリブ海" },
+  { name: "Fracture", sub: "アメリカ南西部" },
+  { name: "Pearl", sub: "ポルトガル" },
+  { name: "Lotus", sub: "インド" },
+  { name: "Sunset", sub: "アメリカ / LA" },
+  { name: "Abyss", sub: "アイスランド" },
+];
+
+const ROLE_LABELS = {
+  duelist: "デュエリスト",
+  initiator: "イニシエーター",
+  controller: "コントローラー",
+  sentinel: "センチネル",
+};
+
+const ROLES_INIT = [
+  { key: 'duelist', label: 'デュエリスト', active: true },
+  { key: 'initiator', label: 'イニシエーター', active: true },
+  { key: 'controller', label: 'コントローラー', active: true },
+  { key: 'sentinel', label: 'センチネル', active: true },
+];
+
+// ===== AGENT TAB =====
+function AgentTab() {
+  const [players, setPlayers] = useState([
+    { id: 1, name: '' },
+    { id: 2, name: '' },
+  ]);
+  const [nextId, setNextId] = useState(3);
+  const [roles, setRoles] = useState(ROLES_INIT);
+  const [noDuplicate, setNoDuplicate] = useState(false);
+  const [results, setResults] = useState([]);
+  const [error, setError] = useState('');
+
+  const addPlayer = () => {
+    if (players.length >= 5) return;
+    setPlayers(prev => [...prev, { id: nextId, name: '' }]);
+    setNextId(n => n + 1);
+  };
+
+  const removePlayer = (id) => {
+    if (players.length <= 1) return;
+    setPlayers(prev => prev.filter(p => p.id !== id));
+  };
+
+  const updatePlayer = (id, name) => {
+    setPlayers(prev => prev.map(p => p.id === id ? { ...p, name } : p));
+  };
+
+  const toggleRole = (key) => {
+    setRoles(prev => prev.map(r => r.key === key ? { ...r, active: !r.active } : r));
+  };
+
+  const rollAgents = () => {
+    setError('');
+    const activeRoles = roles.filter(r => r.active).map(r => r.key);
+    let pool = AGENTS.filter(a => activeRoles.includes(a.role));
+
+    if (pool.length === 0) {
+      setError('ロールを1つ以上選択してください');
+      return;
+    }
+
+    const playerNames = players.map((p, i) => p.name.trim() || `Player ${i + 1}`);
+    const newResults = [];
+    let available = [...pool];
+
+    for (const player of playerNames) {
+      if (available.length === 0) available = [...pool];
+      const idx = Math.floor(Math.random() * available.length);
+      const agent = available[idx];
+      newResults.push({ player, agent });
+      if (noDuplicate) available.splice(idx, 1);
+    }
+
+    setResults(newResults);
+  };
+
+  return (
+    <div>
+      <div className="section-title">エージェント ランダム割り振り</div>
+      <div className="section-desc">プレイヤー名を入力して、エージェントをランダムに割り振ります（最大5人）</div>
+
+      <div className="card">
+        <div className="input-label">プレイヤー名</div>
+        <div className="player-inputs">
+          {players.map((player, idx) => (
+            <div className="player-row" key={player.id}>
+              <input
+                type="text"
+                placeholder={`Player ${idx + 1}`}
+                maxLength={20}
+                value={player.name}
+                onChange={e => updatePlayer(player.id, e.target.value)}
+              />
+              <button
+                className="remove-btn"
+                onClick={() => removePlayer(player.id)}
+                disabled={players.length <= 1}
+              >✕</button>
+            </div>
+          ))}
+        </div>
+        <button
+          className="add-player-btn"
+          onClick={addPlayer}
+          disabled={players.length >= 5}
+        >
+          ＋ プレイヤーを追加（最大5人）
+        </button>
+      </div>
+
+      <div className="card">
+        <div className="input-label" style={{ marginBottom: 12 }}>ロール絞り込み（選択したロールのみ対象）</div>
+        <div className="filter-row">
+          {roles.map(role => (
+            <div
+              key={role.key}
+              className={`filter-chip${role.active ? ' active' : ''}`}
+              onClick={() => toggleRole(role.key)}
+            >{role.label}</div>
+          ))}
+        </div>
+        <div className="input-label" style={{ marginBottom: 12 }}>オプション</div>
+        <div className="filter-row">
+          <div
+            className={`filter-chip${noDuplicate ? ' active' : ''}`}
+            onClick={() => setNoDuplicate(v => !v)}
+          >重複なし</div>
+        </div>
+      </div>
+
+      {error && <div className="notice">{error}</div>}
+
+      <button className="btn-primary" onClick={rollAgents}>⚡ エージェントをランダムに割り振る</button>
+
+      {results.length > 0 && (
+        <div className="result-area">
+          <div className="result-title">— 結果 —</div>
+          <div className="agent-results">
+            {results.map((r, i) => (
+              <div
+                key={i}
+                className="agent-result-row"
+                style={{ animationDelay: `${i * 80}ms` }}
+              >
+                <div className="player-name-result">{r.player}</div>
+                <div className="arrow">→</div>
+                <div className="agent-name">{r.agent.name}</div>
+                <div className={`agent-role role-${r.agent.role}`}>{ROLE_LABELS[r.agent.role]}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ===== MAP TAB =====
+function MapTab() {
+  const [maps, setMaps] = useState(MAPS_DATA.map(m => ({ ...m, excluded: false })));
+  const [mapResult, setMapResult] = useState(null);
+  const [mapKey, setMapKey] = useState(0);
+  const [error, setError] = useState('');
+
+  const toggleMap = (name) => {
+    setMaps(prev => prev.map(m => m.name === name ? { ...m, excluded: !m.excluded } : m));
+  };
+
+  const rollMap = () => {
+    setError('');
+    const pool = maps.filter(m => !m.excluded);
+    if (pool.length === 0) {
+      setError('マップを1つ以上残してください');
+      return;
+    }
+    const chosen = pool[Math.floor(Math.random() * pool.length)];
+    setMapResult(chosen);
+    setMapKey(k => k + 1);
+  };
+
+  return (
+    <div>
+      <div className="section-title">マップ ランダム選択</div>
+      <div className="section-desc">除外するマップをタップして、残りからランダムに1つ選びます</div>
+
+      <div className="card">
+        <div className="input-label" style={{ marginBottom: 12 }}>除外するマップ（タップで除外）</div>
+        <div className="map-grid">
+          {maps.map(map => (
+            <div
+              key={map.name}
+              className={`map-chip${map.excluded ? ' excluded' : ''}`}
+              onClick={() => toggleMap(map.name)}
+            >{map.name}</div>
+          ))}
+        </div>
+      </div>
+
+      {error && <div className="notice">{error}</div>}
+
+      <button className="btn-primary" onClick={rollMap}>🎯 マップをランダムに選ぶ</button>
+
+      {mapResult && (
+        <div className="result-area">
+          <div className="result-title">— 結果 —</div>
+          <div className="map-result-big" key={mapKey}>
+            <div className="map-result-label">TODAY'S MAP</div>
+            <div className="map-result-name">{mapResult.name}</div>
+            <div className="map-result-sub">{mapResult.sub}</div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ===== APP ROOT =====
+function App() {
+  const [activeTab, setActiveTab] = useState('agent');
+
+  return (
+    <>
+      <header>
+        <div>
+          <div className="logo">VAL<span>//</span>RANDOM</div>
+          <div className="subtitle">VALORANT ランダムピック</div>
+        </div>
+        <div className="badge">React 18</div>
+      </header>
+
+      <div className="tabs">
+        <button
+          className={`tab-btn${activeTab === 'agent' ? ' active' : ''}`}
+          onClick={() => setActiveTab('agent')}
+        >エージェント</button>
+        <button
+          className={`tab-btn${activeTab === 'map' ? ' active' : ''}`}
+          onClick={() => setActiveTab('map')}
+        >マップ</button>
+      </div>
+
+      <main>
+        {activeTab === 'agent' ? <AgentTab /> : <MapTab />}
+      </main>
+    </>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+</script>
+</body>
+</html>
