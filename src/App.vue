@@ -5,9 +5,9 @@ import Agent5v5 from './pages/Agent5v5/Agent5v5.vue'
 import Map      from './pages/Map/Map.vue'
 
 const tabs = [
-  { key: 'agent5',   label: 'エージェント (5人)' },
-  { key: 'agent5v5', label: '5 VS 5' },
-  { key: 'map',      label: 'マップ' },
+  { key: 'agent5',   label: 'competitive' },
+  { key: 'agent5v5', label: 'custom' },
+  { key: 'map',      label: 'Map' },
 ]
 
 const activeTab = ref('agent5')
@@ -20,7 +20,7 @@ const activeTab = ref('agent5')
         <div class="header__logo">VAL<span>//</span>RANDOM</div>
         <div class="header__subtitle">VALORANT ランダムピック</div>
       </div>
-      <div class="header__badge">Vue 3</div>
+      <div class="header__badge">Beta 0.0.1</div>
     </header>
 
     <div class="tabs">
