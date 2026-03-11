@@ -146,7 +146,7 @@ function rollAgents() {
     </div>
 
     <button class="btn-primary" @click="rollAgents" :disabled="isRolling">
-      {{ isRolling ? '⚡ ROLLING...' : '⚡ 抽選開始（Lottery starts）' }}
+      {{ isRolling ? '⚡ ROLLING...' : '⚡ 抽選開始' }}
     </button>
 
     <!-- ルーレット中 -->

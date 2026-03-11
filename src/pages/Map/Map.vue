@@ -132,7 +132,7 @@ function rollMap() {
     <div v-if="error" class="notice">{{ error }}</div>
 
     <button class="btn-primary" @click="rollMap" :disabled="isRolling">
-      {{ isRolling ? 'ROLLING...' : '🎯 マップ抽選開始（Lottery starts）' }}
+      {{ isRolling ? 'ROLLING...' : '🎯 マップ抽選開始' }}
     </button>
 
     <!-- ルーレット中 / 確定演出 -->
