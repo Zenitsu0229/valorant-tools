@@ -27,10 +27,10 @@ function rollMap() {
 
 <template>
   <div>
-    <div class="section-title">マップ ランダム選択</div>
-    <div class="section-desc">
+    <h1 class="section-title">マップ ランダム選択</h1>
+    <p class="section-desc">
       除外するマップをタップして、残りからランダムに1つ選びます
-    </div>
+    </p>
 
     <!-- マップ選択 -->
     <div class="card">

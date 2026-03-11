@@ -91,10 +91,10 @@ function rollAgents() {
 
 <template>
   <div>
-    <div class="section-title">エージェント ランダム割り振り</div>
-    <div class="section-desc">
+    <h1 class="section-title">エージェント ランダム割り振り</h1>
+    <p class="section-desc">
       プレイヤー名を入力して、エージェントをランダムに割り振ります（最大{{ MAX_PLAYERS }}人）
-    </div>
+    </p>
 
     <!-- プレイヤー入力 -->
     <div class="card">

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://valorant-tools-two.vercel.app/sitemap.xml
