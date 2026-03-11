@@ -1,3 +1,21 @@
+/* ===== トースト通知 ===== */
+.a5v5-toast {
+  background: rgba(74, 222, 128, 0.1);
+  border: 1px solid rgba(74, 222, 128, 0.4);
+  border-radius: 4px;
+  color: #4ade80;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  padding: 10px 16px;
+  margin-bottom: 16px;
+}
+
+.toast-enter-active { transition: opacity 0.3s ease, transform 0.3s ease; }
+.toast-leave-active { transition: opacity 0.4s ease, transform 0.4s ease; }
+.toast-enter-from  { opacity: 0; transform: translateY(-6px); }
+.toast-leave-to    { opacity: 0; transform: translateY(-6px); }
+
 /* ===== ヘッダー右側アクショングループ ===== */
 .team-card__actions {
   display: flex;
@@ -183,6 +201,179 @@
 }
 .match-team__label--a { color: #ff6b77; border-bottom-color: #ff4655; }
 .match-team__label--b { color: #7dd3fc; border-bottom-color: #7dd3fc; }
+
+/* ===== 抽選演出ステージ ===== */
+.roll-stage {
+  position: relative;
+  overflow: hidden;
+  background: var(--bg2);
+  border: 1px solid rgba(255, 70, 85, 0.3);
+  border-radius: 6px;
+  margin-top: 20px;
+  padding: 44px 24px 36px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+.roll-stage::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 6px;
+  padding: 2px;
+  background: linear-gradient(90deg, #ff4655, #7dd3fc, #ff4655, #7dd3fc);
+  background-size: 300% 100%;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: rollRacingBorder 1.2s linear infinite;
+  pointer-events: none;
+}
+@keyframes rollRacingBorder {
+  0%   { background-position: 0% 0%; }
+  100% { background-position: 300% 0%; }
+}
+.roll-stage__scanline {
+  position: absolute;
+  left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255,70,85,0.7), transparent);
+  animation: rollScanline 1.7s linear forwards;
+  pointer-events: none;
+}
+@keyframes rollScanline {
+  0%   { top: 0%; opacity: 1; }
+  100% { top: 100%; opacity: 0.2; }
+}
+.roll-stage__title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 52px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 10px;
+  text-transform: uppercase;
+  line-height: 1;
+  animation: rollGlitch 1.5s ease-in-out infinite;
+  position: relative;
+  z-index: 1;
+}
+.roll-stage__title-sub {
+  color: var(--red);
+  display: block;
+  font-size: 28px;
+  letter-spacing: 12px;
+  text-shadow: 0 0 24px rgba(255,70,85,0.6);
+  margin-top: 4px;
+}
+@keyframes rollGlitch {
+  0%, 82%, 100% { transform: none; text-shadow: none; filter: none; }
+  83% { transform: translateX(-5px); text-shadow: 5px 0 #ff4655; filter: blur(0.5px); }
+  84% { transform: translateX(5px);  text-shadow: -5px 0 #7dd3fc; }
+  85% { transform: translateX(-3px); text-shadow: 3px 0 #ff4655; }
+  86% { transform: none; filter: none; }
+  87% { transform: translateX(4px) scaleY(1.04); text-shadow: -4px 0 #7dd3fc; }
+  88% { transform: none; text-shadow: none; }
+}
+.roll-stage__teams {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  position: relative;
+  z-index: 1;
+}
+.roll-stage__team--a {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: #ff4655;
+  text-shadow: 0 0 20px rgba(255,70,85,0.5);
+  animation: rollTeamPulse 0.7s ease-in-out infinite alternate;
+}
+.roll-stage__team--b {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: #7dd3fc;
+  text-shadow: 0 0 20px rgba(125,211,252,0.5);
+  animation: rollTeamPulse 0.7s ease-in-out infinite alternate;
+  animation-delay: 0.35s;
+}
+.roll-stage__vs {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-dim);
+  letter-spacing: 3px;
+  animation: rollVsPulse 0.5s ease-in-out infinite alternate;
+}
+@keyframes rollTeamPulse {
+  from { opacity: 0.6; transform: scale(0.96); }
+  to   { opacity: 1;   transform: scale(1.04); }
+}
+@keyframes rollVsPulse {
+  from { opacity: 0.3; }
+  to   { opacity: 1; }
+}
+.roll-stage__chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  position: relative;
+  z-index: 1;
+  max-width: 560px;
+}
+.roll-stage__chip {
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  background: var(--bg3);
+  animation: rollChipFloat 1s ease-in-out infinite alternate;
+  animation-fill-mode: both;
+  opacity: 0;
+}
+@keyframes rollChipFloat {
+  0%   { opacity: 0.2; transform: translateY(4px); }
+  100% { opacity: 0.9; transform: translateY(-4px); }
+}
+.roll-stage__progress-wrap {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  height: 4px;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+.roll-stage__progress {
+  height: 100%;
+  background: linear-gradient(90deg, #ff4655, #7dd3fc, #ff4655);
+  background-size: 200% 100%;
+  border-radius: 2px;
+  animation: rollProgressFill 1.7s cubic-bezier(0.4, 0, 0.2, 1) forwards,
+             rollProgressShimmer 0.8s linear infinite;
+}
+@keyframes rollProgressFill {
+  0%   { width: 0%; }
+  100% { width: 100%; }
+}
+@keyframes rollProgressShimmer {
+  0%   { background-position: 0% 0%; }
+  100% { background-position: 200% 0%; }
+}
+.roll-stage-enter-active { transition: opacity 0.2s ease, transform 0.2s ease; }
+.roll-stage-leave-active { transition: opacity 0.15s ease; }
+.roll-stage-enter-from   { opacity: 0; transform: translateY(8px) scale(0.98); }
+.roll-stage-leave-to     { opacity: 0; }
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 680px) {
