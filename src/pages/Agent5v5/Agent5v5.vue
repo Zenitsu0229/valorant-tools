@@ -79,14 +79,15 @@ function rollAgents() {
   const bannedA = banBoardRefA.value?.banned ?? new Set()
   const bannedB = banBoardRefB.value?.banned ?? new Set()
 
-  const usedNames = []
-  const calcTeam = (team, banned) =>
-    team.map(p => {
+  const calcTeam = (team, banned) => {
+    const usedNames = []
+    return team.map(p => {
       const pool  = getPool(p, banned, usedNames)
       const agent = pool[Math.floor(Math.random() * pool.length)]
       usedNames.push(agent.name)
       return { player: p.name.trim() || p.placeholder, agent }
     })
+  }
 
   const finalA = calcTeam(teamA, bannedA)
   const finalB = calcTeam(teamB, bannedB)
