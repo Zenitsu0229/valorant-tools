@@ -22,7 +22,6 @@ const teamB = reactive(Array.from({ length: TEAM_SIZE }, (_, i) => makePlayer(i 
 const banBoardRefA = ref(null)
 const banBoardRefB = ref(null)
 
-const noDuplicate = ref(true)
 const results     = ref(null)
 const rollingRows = ref(null)
 const isRolling   = ref(false)
@@ -57,7 +56,7 @@ function getPool(player, banned, usedNames = []) {
   let pool = AGENTS.filter(a => activeKeys.includes(a.role) && !banned.has(a.name))
   if (pool.length === 0) pool = AGENTS.filter(a => !banned.has(a.name))
   if (pool.length === 0) pool = [...AGENTS]
-  if (noDuplicate.value) pool = pool.filter(a => !usedNames.includes(a.name))
+  pool = pool.filter(a => !usedNames.includes(a.name))
   if (pool.length === 0) pool = AGENTS.filter(a => activeKeys.includes(a.role))
   if (pool.length === 0) pool = [...AGENTS]
   return pool
@@ -76,7 +75,7 @@ function rollAgents() {
     team.map(p => {
       const pool  = getPool(p, banned, usedNames)
       const agent = pool[Math.floor(Math.random() * pool.length)]
-      if (noDuplicate.value) usedNames.push(agent.name)
+      usedNames.push(agent.name)
       return { player: p.name.trim() || p.placeholder, agent }
     })
 
@@ -218,14 +217,6 @@ function rollAgents() {
         </div>
       </div>
 
-    </div>
-
-    <!-- オプション -->
-    <div class="card">
-      <div class="input-label" style="margin-bottom:12px">オプション</div>
-      <div class="filter-row">
-        <div class="filter-chip" :class="{ 'filter-chip--active': noDuplicate }" @click="noDuplicate = !noDuplicate">重複なし（全10人で重複排除）</div>
-      </div>
     </div>
 
     <div v-if="error" class="notice">{{ error }}</div>
