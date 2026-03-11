@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f1923"/>
+      <stop offset="100%" style="stop-color:#1a2634"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ff4655;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#ff4655;stop-opacity:0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Grid lines (subtle) -->
+  <line x1="0" y1="210" x2="1200" y2="210" stroke="#2a3f52" stroke-width="1" opacity="0.5"/>
+  <line x1="0" y1="420" x2="1200" y2="420" stroke="#2a3f52" stroke-width="1" opacity="0.5"/>
+  <line x1="400" y1="0" x2="400" y2="630" stroke="#2a3f52" stroke-width="1" opacity="0.5"/>
+  <line x1="800" y1="0" x2="800" y2="630" stroke="#2a3f52" stroke-width="1" opacity="0.5"/>
+
+  <!-- Top red border -->
+  <rect width="1200" height="4" fill="#ff4655"/>
+
+  <!-- Left accent bar -->
+  <rect x="80" y="180" width="4" height="270" fill="#ff4655" rx="2"/>
+
+  <!-- Logo -->
+  <text x="110" y="290" font-family="Arial Black, sans-serif" font-size="86" font-weight="900" letter-spacing="6" fill="#ece8e1">VAL</text>
+  <text x="362" y="290" font-family="Arial Black, sans-serif" font-size="86" font-weight="900" letter-spacing="6" fill="#ff4655">//</text>
+  <text x="462" y="290" font-family="Arial Black, sans-serif" font-size="86" font-weight="900" letter-spacing="6" fill="#ece8e1">RANDOM</text>
+
+  <!-- Subtitle -->
+  <text x="112" y="345" font-family="Arial, sans-serif" font-size="22" letter-spacing="4" fill="#7a8a99">VALORANT エージェント・マップ ランダムピックツール</text>
+
+  <!-- Divider -->
+  <rect x="112" y="370" width="500" height="1" fill="url(#accent)"/>
+
+  <!-- Features -->
+  <text x="112" y="412" font-family="Arial, sans-serif" font-size="18" fill="#7a8a99" letter-spacing="2">▸ エージェント自動割り振り</text>
+  <text x="112" y="444" font-family="Arial, sans-serif" font-size="18" fill="#7a8a99" letter-spacing="2">▸ 5v5 チーム別ランダム</text>
+  <text x="112" y="476" font-family="Arial, sans-serif" font-size="18" fill="#7a8a99" letter-spacing="2">▸ マップランダム選択</text>
+
+  <!-- Free badge -->
+  <rect x="840" y="260" width="200" height="52" rx="4" fill="none" stroke="#ff4655" stroke-width="2"/>
+  <text x="940" y="293" font-family="Arial Black, sans-serif" font-size="22" font-weight="900" fill="#ff4655" text-anchor="middle" letter-spacing="4">FREE</text>
+
+  <!-- URL -->
+  <text x="940" y="476" font-family="Arial, sans-serif" font-size="16" fill="#2a3f52" text-anchor="middle" letter-spacing="1">valorant-tools-two.vercel.app</text>
+
+  <!-- Bottom border -->
+  <rect y="626" width="1200" height="4" fill="#2a3f52"/>
+</svg>

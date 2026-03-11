@@ -6,8 +6,8 @@
 
     <!-- ===== PRIMARY META ===== -->
     <title>VALORANT ランダムピック | エージェント・マップ自動選択ツール</title>
-    <meta name="description" content="VALORANTのエージェントとマップをランダムで選ぶ無料ツール。フルパ・カスタム・縛りプレイに最適。" />
-    <meta name="keywords" content="valorant ランダムピック, valorant エージェント ランダム, valorant map random, VALORANT,ヴァロラント,ランダム,割り振り,スクリム,カスタム,valorant random picker,valorant チーム ランダム,valorant マップ ランダム" />
+    <meta name="description" content="VALORANTのエージェントとマップをランダムで選ぶ無料ツール。フルパ・カスタム・縛りプレイに最適。バン機能・ロール絞り込み・5v5対応。" />
+    <meta name="keywords" content="valorant ランダムピック, valorant エージェント ランダム, valorant map random, valorant random picker, valorant チーム ランダム, valorant マップ ランダム, VALORANT, ヴァロラント, ランダム, 割り振り, スクリム, カスタム, エージェント自動選択, ロール指定" />
     <meta name="author" content="VAL RANDOM" />
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
     <meta name="theme-color" content="#0f1923" />
@@ -18,7 +18,7 @@
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="VAL RANDOM" />
     <meta property="og:title" content="VALORANT ランダムピック | エージェント・マップ自動選択ツール" />
-    <meta property="og:description" content="VALORANTのエージェントとマップをランダムで選ぶ無料ツール。フルパ・カスタム・縛りプレイに最適。" />
+    <meta property="og:description" content="VALORANTのエージェントとマップをランダムで選ぶ無料ツール。フルパ・カスタム・縛りプレイに最適。バン機能・ロール絞り込み・5v5対応。" />
     <meta property="og:url" content="https://valorant-tools-two.vercel.app/" />
     <meta property="og:image" content="https://valorant-tools-two.vercel.app/ogp.png" />
     <meta property="og:image:width" content="1200" />
@@ -28,6 +28,8 @@
 
     <!-- ===== TWITTER CARD ===== -->
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@kuyu0903" />
+    <meta name="twitter:creator" content="@kuyu0903" />
     <meta name="twitter:title" content="VALORANT ランダムピック | エージェント・マップ自動選択ツール" />
     <meta name="twitter:description" content="VALORANTのエージェントとマップをランダムで選ぶ無料ツール。フルパ・カスタム・縛りプレイに最適。" />
     <meta name="twitter:image" content="https://valorant-tools-two.vercel.app/ogp.png" />
@@ -39,44 +41,159 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 
-    <!-- ===== JSON-LD 構造化データ ===== -->
+    <!-- ===== PRELOAD (Core Web Vitals) ===== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Noto+Sans+JP:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- ===== JSON-LD: WebApplication ===== -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
       "name": "VALORANT ランダムピック",
-      "alternateName": "VALORANTエージェント・マップ自動選択ツール",
+      "alternateName": ["VAL RANDOM", "VALORANTエージェント・マップ自動選択ツール"],
       "url": "https://valorant-tools-two.vercel.app/",
-      "description": "VALORANTのエージェントとマップをランダムで選ぶ無料ツール。フルパ・カスタム・縛りプレイに最適。",
+      "description": "VALORANTのエージェントとマップをランダムで選ぶ無料ツール。フルパ・カスタム・縛りプレイに最適。バン機能・ロール絞り込み・5v5対応。",
       "applicationCategory": "GameApplication",
       "operatingSystem": "Web",
+      "browserRequirements": "Requires JavaScript",
       "offers": {
         "@type": "Offer",
         "price": "0",
         "priceCurrency": "JPY"
       },
       "inLanguage": "ja",
-      "keywords": "VALORANT, ヴァロラント, ランダムピック, エージェント, マップ, スクリム",
+      "keywords": "VALORANT, ヴァロラント, ランダムピック, エージェント, マップ, スクリム, カスタム",
       "featureList": [
-        "エージェントランダム割り振り（最大5人）",
+        "エージェントランダム割り振り（コンペティティブ5人）",
+        "5v5カスタムゲーム用チーム別エージェントランダム割り振り",
         "ロール絞り込み（デュエリスト・イニシエーター・コントローラー・センチネル）",
         "プレイヤーごとの個別ロールフィルター",
-        "重複なしオプション",
-        "マップランダム選択（除外機能付き）"
+        "バンフェーズ（除外エージェント指定）",
+        "チーム内エージェント重複なし",
+        "マップランダム選択（除外機能付き）",
+        "ロールプリセット設定（2デュエリスト・2センチネル等）"
+      ],
+      "screenshot": "https://valorant-tools-two.vercel.app/ogp.png",
+      "creator": {
+        "@type": "Person",
+        "sameAs": "https://x.com/kuyu0903"
+      }
+    }
+    </script>
+
+    <!-- ===== JSON-LD: FAQ ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "VALORANTのエージェントをランダムに選ぶ方法は？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "VAL RANDOMにアクセスし、「Competitive」タブでプレイヤー名を入力して「抽選開始」ボタンを押すだけで、各プレイヤーにエージェントがランダム割り振りされます。ロールの絞り込みやバン機能にも対応しています。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "5v5のカスタムゲームでチームごとにエージェントをランダムに割り振ることはできますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "はい、「Custom」タブではTEAM AとTEAM Bそれぞれ5人ずつ、計10人にエージェントをランダム割り振りできます。チームごとにバンフェーズやロール設定も独立して設定可能です。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "VALORANTのマップをランダムに選ぶことはできますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "はい、「Map」タブでVALORANTの全マップからランダムに1つ選択できます。プレイしたくないマップを除外した状態で抽選することも可能です。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "ロール（デュエリスト・イニシエーター等）を指定してランダムピックできますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "はい、プレイヤーごとに担当ロールを指定できます。また「2デュエリスト」「2センチネル」などのプリセットボタンでチーム構成を一括設定することもできます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "このツールは無料で使えますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "はい、VAL RANDOMは完全無料でご利用いただけます。アカウント登録も不要です。"
+          }
+        }
       ]
     }
     </script>
 
-    <!-- ===== FONTS ===== -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Noto+Sans+JP:wght@400;700&display=swap"
-      rel="stylesheet"
-    />
+    <!-- ===== JSON-LD: BreadcrumbList ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://valorant-tools-two.vercel.app/"
+        }
+      ]
+    }
+    </script>
   </head>
   <body>
     <div id="app"></div>
+
+    <!-- ===== noscript: クローラー向けフォールバックコンテンツ ===== -->
+    <noscript>
+      <style>
+        .noscript-content { font-family: sans-serif; background: #0f1923; color: #ece8e1; padding: 40px; max-width: 800px; margin: 0 auto; }
+        .noscript-content h1 { color: #ff4655; font-size: 28px; margin-bottom: 16px; }
+        .noscript-content h2 { color: #ff4655; font-size: 20px; margin: 24px 0 8px; }
+        .noscript-content p, .noscript-content li { color: #7a8a99; line-height: 1.8; }
+        .noscript-content ul { padding-left: 20px; }
+      </style>
+      <div class="noscript-content">
+        <h1>VALORANT ランダムピック | VAL RANDOM</h1>
+        <p>VALORANTのエージェントとマップをランダムで選ぶ無料ツールです。フルパ・カスタム・縛りプレイに最適。このサイトの利用にはJavaScriptが必要です。</p>
+
+        <h2>主な機能</h2>
+        <ul>
+          <li>エージェントランダム割り振り（コンペティティブ：最大5人）</li>
+          <li>5v5カスタムゲーム用チーム別ランダム割り振り</li>
+          <li>ロール絞り込み（デュエリスト・イニシエーター・コントローラー・センチネル）</li>
+          <li>バンフェーズ（除外エージェント指定）</li>
+          <li>マップランダム選択（除外機能付き）</li>
+          <li>ロールプリセット（2デュエリスト・2イニシエーター・2コントローラー・2センチネル）</li>
+        </ul>
+
+        <h2>使い方</h2>
+        <ul>
+          <li>Competitiveタブ：5人のプレイヤー名を入力し「抽選開始」を押す</li>
+          <li>Customタブ：TEAM AとTEAM Bそれぞれ5人ずつ設定して「抽選開始」を押す</li>
+          <li>Mapタブ：使用するマップを選択して「マップ抽選」を押す</li>
+        </ul>
+
+        <h2>対応エージェント（2025年時点）</h2>
+        <p>デュエリスト：ジェット、フェニックス、レイナ、レイズ、ヨル、ネオン、アイソ</p>
+        <p>イニシエーター：ソーヴァ、スカイ、ブリーチ、KAYO、フェード、ゲッコー</p>
+        <p>コントローラー：ブリムストーン、ヴァイパー、オーメン、アストラ、ハーバー、クローヴ</p>
+        <p>センチネル：キルジョイ、サイファー、セージ、チェンバー、デッドロック、ヴァイン</p>
+      </div>
+    </noscript>
+
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
