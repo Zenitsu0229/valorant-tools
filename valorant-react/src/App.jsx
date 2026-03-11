@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Analytics } from "@vercel/analytics/react"
 import AgentTab from './pages/AgentTab/AgentTab'
 import MapTab from './pages/MapTab/MapTab'
 
@@ -36,6 +37,7 @@ export default function App() {
       <main>
         {current.component}
       </main>
+      <Analytics />
     </>
   )
 }
