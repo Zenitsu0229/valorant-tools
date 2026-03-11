@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import { SpeedInsights } from '@vercel/speed-insights/vue'
 import Agent5   from './pages/Agent5/Agent5.vue'
 import Agent5v5 from './pages/Agent5v5/Agent5v5.vue'
 import Map      from './pages/Map/Map.vue'
@@ -39,4 +40,6 @@ const activeTab = ref('agent5')
     <Agent5v5 v-show="activeTab === 'agent5v5'" />
     <Map      v-show="activeTab === 'map'" />
   </main>
+
+  <SpeedInsights />
 </template>
