@@ -45,6 +45,21 @@ const handicapLocked     = ref(false) // 確定フラグ
 const resultAreaRef = ref(null)
 const playerListRef = ref(null)
 
+const showBulkInput = ref(false)
+const bulkText      = ref('')
+
+function applyBulk() {
+  const lines = bulkText.value.split('\n').map(l => l.trim()).filter(l => l)
+  if (!lines.length) return
+  const newSize = Math.min(Math.max(lines.length, MIN_PLAYERS), MAX_PLAYERS)
+  while (players.length < newSize) players.push(makePlayer(players.length + 1))
+  while (players.length > newSize) players.pop()
+  lines.forEach((name, i) => { if (i < players.length) players[i].name = name })
+  bulkText.value = ''
+  showBulkInput.value = false
+}
+function onBulkPaste() { nextTick(applyBulk) }
+
 function focusNextInput(idx) {
   const inputs = playerListRef.value?.querySelectorAll('input[type="text"]')
   if (inputs?.[idx + 1]) inputs[idx + 1].focus()
@@ -232,7 +247,30 @@ function splitTeams() {
           @click="mode = m.key"
         >{{ m.label }}</button>
       </div>
+      <button
+        class="bulk-toggle-btn"
+        :class="{ 'bulk-toggle-btn--active': showBulkInput }"
+        :disabled="isRolling"
+        @click="showBulkInput = !showBulkInput; bulkText = ''"
+      >📋 一括入力</button>
     </div>
+
+    <Transition name="bulk-panel">
+      <div v-if="showBulkInput" class="bulk-panel">
+        <textarea
+          class="bulk-textarea"
+          v-model="bulkText"
+          placeholder="Player1&#10;Player2&#10;Player3..."
+          @paste="onBulkPaste"
+          :disabled="isRolling"
+        ></textarea>
+        <div class="bulk-actions">
+          <button class="bulk-apply-btn" @click="applyBulk" :disabled="!bulkText.trim() || isRolling">適用</button>
+          <button class="bulk-close-btn" @click="showBulkInput = false; bulkText = ''">閉じる</button>
+          <span class="bulk-hint">貼り付けで自動適用</span>
+        </div>
+      </div>
+    </Transition>
 
     <!-- プレイヤー入力 -->
     <div class="ts-card">

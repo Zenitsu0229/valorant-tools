@@ -38,7 +38,21 @@ function scrollTo(el) {
   window.scrollTo({ top, behavior: 'smooth' })
 }
 
-const activePreset = ref(null)
+const activePreset  = ref(null)
+const showBulkInput = ref(false)
+const bulkText      = ref('')
+
+function applyBulk() {
+  const lines = bulkText.value.split('\n').map(l => l.trim()).filter(l => l)
+  if (!lines.length) return
+  const newSize = Math.min(Math.max(lines.length, MIN_SIZE), MAX_SIZE)
+  while (team.length < newSize) team.push(makePlayer(team.length + 1))
+  while (team.length > newSize) team.pop()
+  lines.forEach((name, i) => { if (i < team.length) team[i].name = name })
+  bulkText.value = ''
+  showBulkInput.value = false
+}
+function onBulkPaste() { nextTick(applyBulk) }
 
 // --- プレイヤー追加・削除 ---
 function addPlayer() {
@@ -164,7 +178,29 @@ function rollAgents() {
             @click="applyPreset(p)"
           >{{ p.label }}</button>
         </div>
+        <button
+          class="bulk-toggle-btn"
+          :class="{ 'bulk-toggle-btn--active': showBulkInput }"
+          :disabled="isRolling"
+          @click="showBulkInput = !showBulkInput; bulkText = ''"
+        >📋 一括入力</button>
       </div>
+      <Transition name="bulk-panel">
+        <div v-if="showBulkInput" class="bulk-panel">
+          <textarea
+            class="bulk-textarea"
+            v-model="bulkText"
+            placeholder="Player1&#10;Player2&#10;Player3..."
+            @paste="onBulkPaste"
+            :disabled="isRolling"
+          ></textarea>
+          <div class="bulk-actions">
+            <button class="bulk-apply-btn" @click="applyBulk" :disabled="!bulkText.trim() || isRolling">適用</button>
+            <button class="bulk-close-btn" @click="showBulkInput = false; bulkText = ''">閉じる</button>
+            <span class="bulk-hint">貼り付けで自動適用</span>
+          </div>
+        </div>
+      </Transition>
       <div class="player-list" ref="playerListRef">
         <div v-for="(player, idx) in team" :key="idx" class="player-block">
           <span class="player-num">{{ String(idx + 1).padStart(2, '0') }}</span>

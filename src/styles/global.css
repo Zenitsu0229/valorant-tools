@@ -262,6 +262,106 @@ main {
   flex-shrink: 0;
 }
 
+/* ===== 一括入力 ===== */
+.bulk-toggle-btn {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 3px 8px;
+  transition: all 0.15s;
+  text-transform: uppercase;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.bulk-toggle-btn:hover:not(:disabled) {
+  border-color: #7dd3fc;
+  color: #7dd3fc;
+}
+.bulk-toggle-btn--active {
+  background: rgba(125, 211, 252, 0.1);
+  border-color: #7dd3fc;
+  color: #7dd3fc;
+}
+.bulk-toggle-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.bulk-panel {
+  padding: 10px 14px 12px;
+  background: var(--bg3);
+  border-bottom: 1px solid var(--border);
+}
+.bulk-panel-enter-active { transition: opacity 0.15s ease, transform 0.15s ease; }
+.bulk-panel-leave-active { transition: opacity 0.1s ease; }
+.bulk-panel-enter-from   { opacity: 0; transform: translateY(-4px); }
+.bulk-panel-leave-to     { opacity: 0; }
+
+.bulk-textarea {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--text);
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 12px;
+  line-height: 1.7;
+  padding: 7px 10px;
+  resize: none;
+  outline: none;
+  box-sizing: border-box;
+  height: 90px;
+}
+.bulk-textarea:focus { border-color: #7dd3fc; }
+.bulk-textarea::placeholder {
+  color: var(--text-dim);
+  opacity: 0.55;
+  font-size: 11px;
+}
+
+.bulk-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+}
+.bulk-hint {
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 0.5px;
+  margin-left: auto;
+}
+.bulk-apply-btn {
+  background: rgba(125, 211, 252, 0.12);
+  border: 1px solid #7dd3fc;
+  border-radius: 2px;
+  color: #7dd3fc;
+  cursor: pointer;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 4px 14px;
+  transition: all 0.15s;
+}
+.bulk-apply-btn:hover:not(:disabled) { background: rgba(125, 211, 252, 0.25); }
+.bulk-apply-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.bulk-close-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 12px;
+  padding: 4px 8px;
+  transition: all 0.15s;
+}
+.bulk-close-btn:hover { color: var(--text); border-color: var(--text-dim); }
+
 /* ===== PLAYER BLOCK (共通) ===== */
 .player-list {
   display: flex;

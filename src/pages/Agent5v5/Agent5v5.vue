@@ -27,6 +27,26 @@ const banBoardRefB = ref(null)
 const activePresetA = ref(null)
 const activePresetB = ref(null)
 
+const showBulkInputA = ref(false)
+const showBulkInputB = ref(false)
+const bulkTextA      = ref('')
+const bulkTextB      = ref('')
+
+function applyBulkForTeam(team, bulkText, showBulkInput) {
+  const lines = bulkText.value.split('\n').map(l => l.trim()).filter(l => l)
+  if (!lines.length) return
+  const newSize = Math.min(Math.max(lines.length, MIN_SIZE), MAX_SIZE)
+  while (team.length < newSize) team.push(makePlayer(team.length + 1))
+  while (team.length > newSize) team.pop()
+  lines.forEach((name, i) => { if (i < team.length) team[i].name = name })
+  bulkText.value = ''
+  showBulkInput.value = false
+}
+function applyBulkA() { applyBulkForTeam(teamA, bulkTextA, showBulkInputA) }
+function applyBulkB() { applyBulkForTeam(teamB, bulkTextB, showBulkInputB) }
+function onBulkPasteA() { nextTick(applyBulkA) }
+function onBulkPasteB() { nextTick(applyBulkB) }
+
 const results     = ref(null)
 const rollingRows = ref(null)
 const isRolling   = ref(false)
@@ -224,8 +244,30 @@ function rollAgents() {
                 @click="applyPreset(teamA, p, 'a')"
               >{{ p.label }}</button>
             </div>
+            <button
+              class="bulk-toggle-btn"
+              :class="{ 'bulk-toggle-btn--active': showBulkInputA }"
+              :disabled="isRolling"
+              @click="showBulkInputA = !showBulkInputA; bulkTextA = ''"
+            >📋 一括入力</button>
           </div>
         </div>
+        <Transition name="bulk-panel">
+          <div v-if="showBulkInputA" class="bulk-panel">
+            <textarea
+              class="bulk-textarea"
+              v-model="bulkTextA"
+              placeholder="Player1&#10;Player2&#10;Player3..."
+              @paste="onBulkPasteA"
+              :disabled="isRolling"
+            ></textarea>
+            <div class="bulk-actions">
+              <button class="bulk-apply-btn" @click="applyBulkA" :disabled="!bulkTextA.trim() || isRolling">適用</button>
+              <button class="bulk-close-btn" @click="showBulkInputA = false; bulkTextA = ''">閉じる</button>
+              <span class="bulk-hint">貼り付けで自動適用</span>
+            </div>
+          </div>
+        </Transition>
         <AgentBanBoard ref="banBoardRefA" :disabled="isRolling" />
         <div class="player-list" ref="playerListRefA">
           <div v-for="(player, idx) in teamA" :key="idx" class="player-block">
@@ -277,8 +319,30 @@ function rollAgents() {
                 @click="applyPreset(teamB, p, 'b')"
               >{{ p.label }}</button>
             </div>
+            <button
+              class="bulk-toggle-btn"
+              :class="{ 'bulk-toggle-btn--active': showBulkInputB }"
+              :disabled="isRolling"
+              @click="showBulkInputB = !showBulkInputB; bulkTextB = ''"
+            >📋 一括入力</button>
           </div>
         </div>
+        <Transition name="bulk-panel">
+          <div v-if="showBulkInputB" class="bulk-panel">
+            <textarea
+              class="bulk-textarea"
+              v-model="bulkTextB"
+              placeholder="Player1&#10;Player2&#10;Player3..."
+              @paste="onBulkPasteB"
+              :disabled="isRolling"
+            ></textarea>
+            <div class="bulk-actions">
+              <button class="bulk-apply-btn" @click="applyBulkB" :disabled="!bulkTextB.trim() || isRolling">適用</button>
+              <button class="bulk-close-btn" @click="showBulkInputB = false; bulkTextB = ''">閉じる</button>
+              <span class="bulk-hint">貼り付けで自動適用</span>
+            </div>
+          </div>
+        </Transition>
         <AgentBanBoard ref="banBoardRefB" :disabled="isRolling" />
         <div class="player-list" ref="playerListRefB">
           <div v-for="(player, idx) in teamB" :key="idx" class="player-block">
