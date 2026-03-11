@@ -24,6 +24,7 @@ const legalPage  = ref(null) // null | 'privacy' | 'terms' | 'cookie'
 
 function openLegal(page) {
   legalPage.value = page
+  activeTab.value = 'contact'
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
