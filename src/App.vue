@@ -1,37 +1,42 @@
 <script setup>
 import { ref } from 'vue'
-import AgentTab from './pages/AgentTab/AgentTab.vue'
-import MapTab from './pages/MapTab/MapTab.vue'
+import Agent5   from './pages/Agent5/Agent5.vue'
+import Agent5v5 from './pages/Agent5v5/Agent5v5.vue'
+import Map      from './pages/Map/Map.vue'
 
 const tabs = [
-  { key: 'agent', label: 'エージェント' },
-  { key: 'map',   label: 'マップ' },
+  { key: 'agent5',   label: 'エージェント (5人)' },
+  { key: 'agent5v5', label: '5 VS 5' },
+  { key: 'map',      label: 'マップ' },
 ]
 
-const activeTab = ref('agent')
+const activeTab = ref('agent5')
 </script>
 
 <template>
-  <header class="header">
-    <div>
-      <div class="header__logo">VAL<span>//</span>RANDOM</div>
-      <div class="header__subtitle">VALORANT ランダムピック</div>
-    </div>
-    <div class="header__badge">Vue 3</div>
-  </header>
+  <div class="sticky-top">
+    <header class="header">
+      <div>
+        <div class="header__logo">VAL<span>//</span>RANDOM</div>
+        <div class="header__subtitle">VALORANT ランダムピック</div>
+      </div>
+      <div class="header__badge">Vue 3</div>
+    </header>
 
-  <div class="tabs">
-    <button
-      v-for="tab in tabs"
-      :key="tab.key"
-      class="tab-btn"
-      :class="{ 'tab-btn--active': activeTab === tab.key }"
-      @click="activeTab = tab.key"
-    >{{ tab.label }}</button>
+    <div class="tabs">
+      <button
+        v-for="tab in tabs"
+        :key="tab.key"
+        class="tab-btn"
+        :class="{ 'tab-btn--active': activeTab === tab.key }"
+        @click="activeTab = tab.key"
+      >{{ tab.label }}</button>
+    </div>
   </div>
 
   <main>
-    <AgentTab v-if="activeTab === 'agent'" />
-    <MapTab   v-if="activeTab === 'map'" />
+    <Agent5   v-show="activeTab === 'agent5'" />
+    <Agent5v5 v-show="activeTab === 'agent5v5'" />
+    <Map      v-show="activeTab === 'map'" />
   </main>
 </template>

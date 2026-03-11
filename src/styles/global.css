@@ -27,6 +27,13 @@ body {
 }
 
 /* ===== HEADER ===== */
+/* ===== STICKY WRAPPER ===== */
+.sticky-top {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
 .header {
   background: var(--bg2);
   border-bottom: 2px solid var(--red);
@@ -218,6 +225,274 @@ main {
   margin-bottom: 16px;
   border-bottom: 1px solid var(--border);
   padding-bottom: 10px;
+}
+
+/* ===== PLAYER BLOCK (共通) ===== */
+.player-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.player-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.player-block:last-child { border-bottom: none; }
+
+.player-row__input {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--text);
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 13px;
+  padding: 8px 12px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.player-row__input:focus       { border-color: var(--red); }
+.player-row__input::placeholder { color: var(--text-dim); }
+.player-row__input:disabled    { opacity: 0.5; }
+
+/* ===== ロールチップ (共通) ===== */
+.player-role-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.player-role-chip {
+  font-size: 10px;
+  letter-spacing: 1px;
+  padding: 2px 8px;
+  border-radius: 2px;
+  border: 1px solid var(--border);
+  background: var(--bg3);
+  color: var(--text-dim);
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.15s;
+  user-select: none;
+  opacity: 0.5;
+}
+.player-role-chip--active.player-role-chip--duelist    { background: rgba(255,70,85,0.2);   border-color: #ff6b77; color: #ff6b77;  opacity: 1; }
+.player-role-chip--active.player-role-chip--initiator  { background: rgba(255,165,0,0.2);   border-color: #ffb347; color: #ffb347; opacity: 1; }
+.player-role-chip--active.player-role-chip--controller { background: rgba(100,200,255,0.2); border-color: #7dd3fc; color: #7dd3fc; opacity: 1; }
+.player-role-chip--active.player-role-chip--sentinel   { background: rgba(100,255,150,0.2); border-color: #6ee7b7; color: #6ee7b7; opacity: 1; }
+
+.player-role-bulk-btns { display: flex; gap: 4px; }
+.player-role-bulk-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 9px;
+  letter-spacing: 1px;
+  padding: 2px 6px;
+  transition: all 0.15s;
+}
+.player-role-bulk-btn:hover         { border-color: var(--text-dim); color: var(--text); }
+.player-role-bulk-btn--off:hover    { border-color: var(--red); color: var(--red); }
+.player-role-bulk-btn:disabled      { opacity: 0.3; cursor: not-allowed; }
+
+/* ===== ロールバッジ共通 ===== */
+.agent-role--duelist    { background: rgba(255,70,85,0.2);   color: #ff6b77; }
+.agent-role--initiator  { background: rgba(255,165,0,0.2);   color: #ffb347; }
+.agent-role--controller { background: rgba(100,200,255,0.2); color: #7dd3fc; }
+.agent-role--sentinel   { background: rgba(100,255,150,0.2); color: #6ee7b7; }
+
+/* ===== ルーレット・結果カード列 ===== */
+.rolling-col,
+.result-col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ===== ルーレットカード ===== */
+.rolling-card {
+  position: relative;
+  height: 72px;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  display: flex;
+  align-items: center;
+}
+
+.rolling-card--locked {
+  border-color: #42b883;
+  box-shadow: 0 0 12px rgba(66,184,131,0.4);
+  animation: lockPulse 0.35s ease forwards;
+}
+
+@keyframes lockPulse {
+  0%   { box-shadow: 0 0 0   rgba(66,184,131,0); }
+  50%  { box-shadow: 0 0 24px rgba(66,184,131,0.8); }
+  100% { box-shadow: 0 0 12px rgba(66,184,131,0.4); }
+}
+
+.rolling-card__portrait {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 55%;
+  object-fit: cover;
+  object-position: top center;
+}
+
+.rolling-card__overlay { position: absolute; inset: 0; }
+.rolling-card__overlay--duelist    { background: linear-gradient(to right, rgba(15,25,35,0.97) 40%, rgba(255,70,85,0.15) 100%); }
+.rolling-card__overlay--initiator  { background: linear-gradient(to right, rgba(15,25,35,0.97) 40%, rgba(255,165,0,0.15) 100%); }
+.rolling-card__overlay--controller { background: linear-gradient(to right, rgba(15,25,35,0.97) 40%, rgba(100,200,255,0.15) 100%); }
+.rolling-card__overlay--sentinel   { background: linear-gradient(to right, rgba(15,25,35,0.97) 40%, rgba(100,255,150,0.15) 100%); }
+
+.rolling-card__info {
+  position: relative;
+  padding: 0 12px;
+  z-index: 1;
+}
+
+.rolling-card__player {
+  font-size: 10px;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 1px;
+  margin-bottom: 3px;
+}
+
+.rolling-card__name {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 1px;
+  line-height: 1;
+  margin-bottom: 5px;
+}
+
+.rolling-card__role-badge {
+  display: inline-block;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 1px 6px;
+  border-radius: 2px;
+}
+
+.rolling-card__lock {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 20px;
+  height: 20px;
+  background: #42b883;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: #fff;
+  font-weight: 700;
+  z-index: 2;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.5); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ===== 確定結果カード ===== */
+.result-card {
+  position: relative;
+  height: 80px;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid transparent;
+  animation: cardReveal 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  opacity: 0;
+}
+
+.result-card--duelist    { border-color: rgba(255,107,119,0.5); box-shadow: 0 0 10px rgba(255,70,85,0.2); }
+.result-card--initiator  { border-color: rgba(255,179,71,0.5);  box-shadow: 0 0 10px rgba(255,165,0,0.2); }
+.result-card--controller { border-color: rgba(125,211,252,0.5); box-shadow: 0 0 10px rgba(100,200,255,0.2); }
+.result-card--sentinel   { border-color: rgba(110,231,183,0.5); box-shadow: 0 0 10px rgba(100,255,150,0.2); }
+
+@keyframes cardReveal {
+  from { opacity: 0; transform: translateX(-10px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.result-card__portrait {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 55%;
+  object-fit: cover;
+  object-position: top center;
+}
+
+.result-card__overlay { position: absolute; inset: 0; }
+.result-card__overlay--duelist    { background: linear-gradient(to right, var(--bg3) 38%, rgba(255,70,85,0.12) 100%); }
+.result-card__overlay--initiator  { background: linear-gradient(to right, var(--bg3) 38%, rgba(255,165,0,0.12) 100%); }
+.result-card__overlay--controller { background: linear-gradient(to right, var(--bg3) 38%, rgba(100,200,255,0.12) 100%); }
+.result-card__overlay--sentinel   { background: linear-gradient(to right, var(--bg3) 38%, rgba(100,255,150,0.12) 100%); }
+
+.result-card__info {
+  position: relative;
+  padding: 10px 12px;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.result-card__player {
+  font-size: 10px;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 1px;
+  margin-bottom: 3px;
+}
+
+.result-card__name {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 19px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 1px;
+  line-height: 1;
+  margin-bottom: 5px;
+}
+
+.result-card__role {
+  display: inline-block;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 1px 6px;
+  border-radius: 2px;
+}
+
+.result-card__icon {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.8));
+  opacity: 0.85;
+  z-index: 2;
 }
 
 /* ===== RESPONSIVE ===== */

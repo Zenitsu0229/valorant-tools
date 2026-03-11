@@ -1,0 +1,229 @@
+/* ===== 5人用 プレイヤーカード ===== */
+.a5-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--red);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.a5-card__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.a5-card__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--red);
+  box-shadow: 0 0 6px rgba(255,70,85,0.6);
+  flex-shrink: 0;
+}
+
+.a5-card__title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text);
+}
+
+/* ===== 縦カード ルーレット ===== */
+.a5-rolling-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+
+.a5-rolling-card {
+  position: relative;
+  border-radius: 6px;
+  overflow: hidden;
+  aspect-ratio: 2 / 5;
+  border: 1px solid var(--border);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.a5-rolling-card--locked {
+  border-color: #42b883;
+  box-shadow: 0 0 16px rgba(66,184,131,0.5);
+  animation: lockPulse 0.35s ease forwards;
+}
+
+.a5-rolling-card__portrait {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+}
+
+.a5-rolling-card__overlay {
+  position: absolute;
+  inset: 0;
+}
+.a5-rolling-card__overlay--duelist    { background: linear-gradient(to bottom, rgba(255,70,85,0.08) 0%, rgba(10,18,28,0.92) 70%); }
+.a5-rolling-card__overlay--initiator  { background: linear-gradient(to bottom, rgba(255,165,0,0.08) 0%, rgba(10,18,28,0.92) 70%); }
+.a5-rolling-card__overlay--controller { background: linear-gradient(to bottom, rgba(100,200,255,0.08) 0%, rgba(10,18,28,0.92) 70%); }
+.a5-rolling-card__overlay--sentinel   { background: linear-gradient(to bottom, rgba(100,255,150,0.08) 0%, rgba(10,18,28,0.92) 70%); }
+
+.a5-rolling-card__lock {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 20px;
+  height: 20px;
+  background: #42b883;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: #fff;
+  font-weight: 700;
+  z-index: 2;
+  animation: fadeIn 0.2s ease;
+}
+
+.a5-rolling-card__info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 10px 10px 12px;
+  z-index: 1;
+}
+
+.a5-rolling-card__player {
+  font-size: 9px;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.a5-rolling-card__name {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 1px;
+  line-height: 1;
+  margin-bottom: 5px;
+}
+
+.a5-rolling-card__role-badge {
+  display: inline-block;
+  font-size: 8px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 1px 5px;
+  border-radius: 2px;
+}
+
+/* ===== 縦カード結果グリッド ===== */
+.a5-result-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+
+.a5-result-card {
+  position: relative;
+  border-radius: 6px;
+  overflow: hidden;
+  aspect-ratio: 2 / 5;
+  border: 1px solid transparent;
+  animation: a5CardReveal 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  opacity: 0;
+}
+
+.a5-result-card--duelist    { border-color: rgba(255,107,119,0.6); box-shadow: 0 0 14px rgba(255,70,85,0.25); }
+.a5-result-card--initiator  { border-color: rgba(255,179,71,0.6);  box-shadow: 0 0 14px rgba(255,165,0,0.25); }
+.a5-result-card--controller { border-color: rgba(125,211,252,0.6); box-shadow: 0 0 14px rgba(100,200,255,0.25); }
+.a5-result-card--sentinel   { border-color: rgba(110,231,183,0.6); box-shadow: 0 0 14px rgba(100,255,150,0.25); }
+
+@keyframes a5CardReveal {
+  from { opacity: 0; transform: translateY(14px) scale(0.94); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.a5-result-card__portrait {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+}
+
+.a5-result-card__overlay {
+  position: absolute;
+  inset: 0;
+}
+.a5-result-card__overlay--duelist    { background: linear-gradient(to bottom, rgba(255,70,85,0.08) 0%, rgba(10,18,28,0.92) 70%); }
+.a5-result-card__overlay--initiator  { background: linear-gradient(to bottom, rgba(255,165,0,0.08) 0%, rgba(10,18,28,0.92) 70%); }
+.a5-result-card__overlay--controller { background: linear-gradient(to bottom, rgba(100,200,255,0.08) 0%, rgba(10,18,28,0.92) 70%); }
+.a5-result-card__overlay--sentinel   { background: linear-gradient(to bottom, rgba(100,255,150,0.08) 0%, rgba(10,18,28,0.92) 70%); }
+
+.a5-result-card__icon {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.8));
+  opacity: 0.85;
+  z-index: 1;
+}
+
+.a5-result-card__info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 10px 10px 12px;
+  z-index: 1;
+}
+
+.a5-result-card__player {
+  font-size: 9px;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.a5-result-card__name {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 1px;
+  line-height: 1;
+  margin-bottom: 5px;
+}
+
+.a5-result-card__role {
+  display: inline-block;
+  font-size: 8px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 1px 5px;
+  border-radius: 2px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+  .a5-card { margin-bottom: 16px; }
+  .a5-result-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+}

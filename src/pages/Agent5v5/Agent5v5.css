@@ -1,0 +1,115 @@
+/* ===== TEAM GRID (入力) ===== */
+.team-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 0 16px;
+  align-items: start;
+  margin-bottom: 20px;
+}
+
+/* VS 縦区切り */
+.vs-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 52px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-dim);
+  letter-spacing: 3px;
+}
+
+/* ===== TEAM CARD ===== */
+.team-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.team-card--a { border-top: 3px solid #ff4655; }
+.team-card--b { border-top: 3px solid #7dd3fc; }
+
+.team-card__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.team-card__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.team-card__dot--a { background: #ff4655; box-shadow: 0 0 6px rgba(255,70,85,0.6); }
+.team-card__dot--b { background: #7dd3fc; box-shadow: 0 0 6px rgba(125,211,252,0.6); }
+
+.team-card__name-input {
+  background: none;
+  border: none;
+  color: var(--text);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  outline: none;
+  width: 100%;
+}
+.team-card__name-input:disabled { opacity: 0.6; }
+
+/* ===== MATCH GRID (ルーレット・結果共通レイアウト) ===== */
+.match-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 0 12px;
+  align-items: start;
+}
+
+.match-vs {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-dim);
+  letter-spacing: 3px;
+  padding-top: 8px;
+  text-align: center;
+}
+
+.match-team__label {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--border);
+}
+.match-team__label--a { color: #ff6b77; border-bottom-color: #ff4655; }
+.match-team__label--b { color: #7dd3fc; border-bottom-color: #7dd3fc; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 680px) {
+  .team-grid {
+    grid-template-columns: 1fr;
+    gap: 12px 0;
+  }
+  .vs-divider {
+    padding-top: 0;
+    padding: 4px 0;
+    font-size: 18px;
+  }
+  .match-grid {
+    grid-template-columns: 1fr;
+    gap: 16px 0;
+  }
+  .match-vs {
+    text-align: center;
+    padding: 0;
+  }
+}

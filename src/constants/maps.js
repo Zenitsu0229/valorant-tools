@@ -68,4 +68,10 @@ export const MAPS = [
     splash:   `${BASE}/224b0a95-48b9-f703-1bd8-67aca101a61f/splash.png`,
     listIcon: `${BASE}/224b0a95-48b9-f703-1bd8-67aca101a61f/listviewicon.png`,
   },
+  {
+    name: 'Corrode',
+    sub: 'カロード',
+    splash:   `${BASE}/1c18ab1f-420d-0d8b-71d0-77ad3c439115/splash.png`,
+    listIcon: `${BASE}/1c18ab1f-420d-0d8b-71d0-77ad3c439115/listviewicon.png`,
+  },
 ]

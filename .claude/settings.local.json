@@ -2,7 +2,10 @@
   "permissions": {
     "allow": [
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/)",
-      "WebFetch(domain:valorant-api.com)"
+      "WebFetch(domain:valorant-api.com)",
+      "WebFetch(domain:tk-production.xyz)",
+      "Bash(cd D:/02_project/valorant-tools && npm run build 2>&1)",
+      "WebSearch"
     ]
   }
 }
