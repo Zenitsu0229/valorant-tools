@@ -34,12 +34,56 @@
   color: var(--text);
 }
 
+/* ===== 人数コントロール ===== */
+.size-control {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.size-btn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+.size-btn:hover:not(:disabled) {
+  border-color: var(--red);
+  color: var(--red);
+}
+.size-btn:disabled { opacity: 0.25; cursor: not-allowed; }
+
+.size-display {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  min-width: 28px;
+  text-align: center;
+  letter-spacing: 0;
+}
+.size-max {
+  color: var(--text-dim);
+  font-size: 11px;
+}
+
 /* ===== プリセットボタン ===== */
 .preset-bar {
   display: flex;
   align-items: center;
   gap: 4px;
-  margin-left: auto;
 }
 
 .preset-btn {

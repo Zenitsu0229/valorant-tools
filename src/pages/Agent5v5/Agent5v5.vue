@@ -5,7 +5,8 @@ import { ROLE_LABELS, ROLES_INIT, ROLE_PRESETS } from '../../constants/roles'
 import AgentBanBoard from '../../components/AgentBanBoard.vue'
 import './Agent5v5.css'
 
-const TEAM_SIZE = 5
+const MAX_SIZE = 5
+const MIN_SIZE = 1
 
 const makePlayer = (n) => ({
   name: '',
@@ -16,8 +17,8 @@ const makePlayer = (n) => ({
 // --- State ---
 const teamAName = ref('TEAM A')
 const teamBName = ref('TEAM B')
-const teamA = reactive(Array.from({ length: TEAM_SIZE }, (_, i) => makePlayer(i + 1)))
-const teamB = reactive(Array.from({ length: TEAM_SIZE }, (_, i) => makePlayer(i + 1)))
+const teamA = reactive(Array.from({ length: MAX_SIZE }, (_, i) => makePlayer(i + 1)))
+const teamB = reactive(Array.from({ length: MAX_SIZE }, (_, i) => makePlayer(i + 1)))
 
 const banBoardRefA = ref(null)
 const banBoardRefB = ref(null)
@@ -38,6 +39,17 @@ function scrollTo(el) {
   const headerH = document.querySelector('.sticky-top')?.offsetHeight ?? 0
   const top = el.getBoundingClientRect().top + window.scrollY - headerH - 12
   window.scrollTo({ top, behavior: 'smooth' })
+}
+
+// --- プレイヤー追加・削除 ---
+function addTeamPlayer(team) {
+  if (isRolling.value || team.length >= MAX_SIZE) return
+  team.push(makePlayer(team.length + 1))
+}
+
+function removeTeamPlayer(team) {
+  if (isRolling.value || team.length <= MIN_SIZE) return
+  team.pop()
 }
 
 // --- ロール操作 ---
@@ -104,7 +116,7 @@ function rollAgents() {
   const LOCK_INTERVAL = 1000
   const SLOWDOWN_SPAN = 900
   let lockedCount = 0
-  const totalPlayers = TEAM_SIZE * 2
+  const totalPlayers = teamA.length + teamB.length
 
   ;[...finalA.map((f, i) => ({ team: 'a', idx: i, final: f })),
     ...finalB.map((f, i) => ({ team: 'b', idx: i, final: f }))
@@ -141,7 +153,7 @@ function rollAgents() {
 <template>
   <div>
     <h1 class="section-title">5v5 VALORANTキャラ ランダムピック</h1>
-    <p class="section-desc">カスタムゲーム用 — TEAM A・TEAM B全10人のキャラをチームごとにランダム割り振り。チーム別バン・ロール設定対応。</p>
+    <p class="section-desc">カスタムゲーム用 — TEAM A・TEAM Bそれぞれ1〜5人のキャラをランダム割り振り。チーム別バン・ロール設定対応。</p>
 
     <!-- チーム入力 -->
     <div class="team-grid">
@@ -151,15 +163,22 @@ function rollAgents() {
         <div class="team-card__header">
           <span class="team-card__dot team-card__dot--a"></span>
           <input class="team-card__name-input" v-model="teamAName" maxlength="12" :disabled="isRolling" />
-          <div class="preset-bar">
-            <button
-              v-for="p in ROLE_PRESETS" :key="p.key"
-              class="preset-btn"
-              :class="{ 'preset-btn--clr': p.key === 'clr', 'preset-btn--active': activePresetA === p.key }"
-              :title="p.desc"
-              :disabled="isRolling"
-              @click="applyPreset(teamA, p, 'a')"
-            >{{ p.label }}</button>
+          <div class="team-card__actions">
+            <div class="size-control">
+              <button class="size-btn" @click="removeTeamPlayer(teamA)" :disabled="isRolling || teamA.length <= 1">−</button>
+              <span class="size-display">{{ teamA.length }}<span class="size-max">/5</span></span>
+              <button class="size-btn" @click="addTeamPlayer(teamA)" :disabled="isRolling || teamA.length >= 5">＋</button>
+            </div>
+            <div class="preset-bar">
+              <button
+                v-for="p in ROLE_PRESETS" :key="p.key"
+                class="preset-btn"
+                :class="{ 'preset-btn--clr': p.key === 'clr', 'preset-btn--active': activePresetA === p.key }"
+                :title="p.desc"
+                :disabled="isRolling"
+                @click="applyPreset(teamA, p, 'a')"
+              >{{ p.label }}</button>
+            </div>
           </div>
         </div>
         <AgentBanBoard ref="banBoardRefA" :disabled="isRolling" />
@@ -196,15 +215,22 @@ function rollAgents() {
         <div class="team-card__header">
           <span class="team-card__dot team-card__dot--b"></span>
           <input class="team-card__name-input" v-model="teamBName" maxlength="12" :disabled="isRolling" />
-          <div class="preset-bar">
-            <button
-              v-for="p in ROLE_PRESETS" :key="p.key"
-              class="preset-btn"
-              :class="{ 'preset-btn--clr': p.key === 'clr', 'preset-btn--active': activePresetB === p.key }"
-              :title="p.desc"
-              :disabled="isRolling"
-              @click="applyPreset(teamB, p, 'b')"
-            >{{ p.label }}</button>
+          <div class="team-card__actions">
+            <div class="size-control">
+              <button class="size-btn" @click="removeTeamPlayer(teamB)" :disabled="isRolling || teamB.length <= 1">−</button>
+              <span class="size-display">{{ teamB.length }}<span class="size-max">/5</span></span>
+              <button class="size-btn" @click="addTeamPlayer(teamB)" :disabled="isRolling || teamB.length >= 5">＋</button>
+            </div>
+            <div class="preset-bar">
+              <button
+                v-for="p in ROLE_PRESETS" :key="p.key"
+                class="preset-btn"
+                :class="{ 'preset-btn--clr': p.key === 'clr', 'preset-btn--active': activePresetB === p.key }"
+                :title="p.desc"
+                :disabled="isRolling"
+                @click="applyPreset(teamB, p, 'b')"
+              >{{ p.label }}</button>
+            </div>
           </div>
         </div>
         <AgentBanBoard ref="banBoardRefB" :disabled="isRolling" />

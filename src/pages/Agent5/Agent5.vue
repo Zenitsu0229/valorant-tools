@@ -5,7 +5,8 @@ import { ROLE_LABELS, ROLES_INIT, ROLE_PRESETS } from '../../constants/roles'
 import AgentBanBoard from '../../components/AgentBanBoard.vue'
 import './Agent5.css'
 
-const TEAM_SIZE = 5
+const MAX_SIZE = 5
+const MIN_SIZE = 1
 
 const makePlayer = (n) => ({
   name: '',
@@ -14,7 +15,7 @@ const makePlayer = (n) => ({
 })
 
 // --- State ---
-const team        = reactive(Array.from({ length: TEAM_SIZE }, (_, i) => makePlayer(i + 1)))
+const team        = reactive(Array.from({ length: MAX_SIZE }, (_, i) => makePlayer(i + 1)))
 const results     = ref(null)
 const rollingRows = ref(null)
 const isRolling   = ref(false)
@@ -32,6 +33,17 @@ function scrollTo(el) {
 }
 
 const activePreset = ref(null)
+
+// --- プレイヤー追加・削除 ---
+function addPlayer() {
+  if (isRolling.value || team.length >= MAX_SIZE) return
+  team.push(makePlayer(team.length + 1))
+}
+
+function removePlayer() {
+  if (isRolling.value || team.length <= MIN_SIZE) return
+  team.pop()
+}
 
 // --- ロール操作 ---
 function toggleRole(player, roleKey) {
@@ -121,7 +133,7 @@ function rollAgents() {
 <template>
   <div>
     <h1 class="section-title">VALORANTキャラ ランダムピック・ルーレット</h1>
-    <p class="section-desc">5人用 — キャラ（エージェント）をランダムピック。バン・ロール絞り込み対応。フルパ・縛りプレイ・トロールルーレットに最適。</p>
+    <p class="section-desc">1〜5人用 — キャラ（エージェント）をランダムピック。バン・ロール絞り込み対応。フルパ・縛りプレイ・トロールルーレットに最適。</p>
 
     <!-- バンフェーズ -->
     <AgentBanBoard ref="banBoardRef" :disabled="isRolling" />
@@ -131,6 +143,11 @@ function rollAgents() {
       <div class="a5-card__header">
         <span class="a5-card__dot"></span>
         <span class="a5-card__title">YOUR TEAM</span>
+        <div class="size-control">
+          <button class="size-btn" @click="removePlayer" :disabled="isRolling || team.length <= 1">−</button>
+          <span class="size-display">{{ team.length }}<span class="size-max">/5</span></span>
+          <button class="size-btn" @click="addPlayer" :disabled="isRolling || team.length >= 5">＋</button>
+        </div>
         <div class="preset-bar">
           <button
             v-for="p in ROLE_PRESETS" :key="p.key"
