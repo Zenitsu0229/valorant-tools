@@ -120,8 +120,8 @@ function rollAgents() {
 
 <template>
   <div>
-    <h1 class="section-title">エージェント ランダム割り振り</h1>
-    <p class="section-desc">5人用 — バンしたエージェントを除外してランダムに割り振ります</p>
+    <h1 class="section-title">VALORANTキャラ ランダムピック・ルーレット</h1>
+    <p class="section-desc">5人用 — キャラ（エージェント）をランダムピック。バン・ロール絞り込み対応。フルパ・縛りプレイ・トロールルーレットに最適。</p>
 
     <!-- バンフェーズ -->
     <AgentBanBoard ref="banBoardRef" :disabled="isRolling" />

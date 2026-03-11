@@ -94,8 +94,8 @@ function rollMap() {
 
 <template>
   <div>
-    <h1 class="section-title">マップ ランダム選択</h1>
-    <p class="section-desc">除外するマップをクリックして、残りからランダムに1つ選びます</p>
+    <h1 class="section-title">VALORANTマップ ランダム・ルーレット</h1>
+    <p class="section-desc">プレイするマップをルーレットでランダム選択。除外機能・コンペティティブマップ絞り込み対応。</p>
 
     <!-- プリセット -->
     <div class="map-preset-bar">

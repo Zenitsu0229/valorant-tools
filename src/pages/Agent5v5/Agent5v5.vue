@@ -140,8 +140,8 @@ function rollAgents() {
 
 <template>
   <div>
-    <h1 class="section-title">5 VS 5 エージェント割り振り</h1>
-    <p class="section-desc">5v5 カスタムゲーム用 — 全10人にエージェントをランダム割り振りします</p>
+    <h1 class="section-title">5v5 VALORANTキャラ ランダムピック</h1>
+    <p class="section-desc">カスタムゲーム用 — TEAM A・TEAM B全10人のキャラをチームごとにランダム割り振り。チーム別バン・ロール設定対応。</p>
 
     <!-- チーム入力 -->
     <div class="team-grid">
