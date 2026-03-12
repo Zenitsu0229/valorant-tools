@@ -868,6 +868,102 @@ main {
   line-height: 1.6;
 }
 
+/* ===== SNS シェアバー ===== */
+.share-bar {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 20px;
+  border-radius: 3px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-decoration: none;
+  transition: opacity 0.15s;
+}
+.share-btn:hover { opacity: 0.8; }
+
+.share-btn--x {
+  background: #000;
+  color: #fff;
+  border: 1px solid #333;
+}
+.share-btn--line {
+  background: #06c755;
+  color: #fff;
+  border: 1px solid #06c755;
+}
+
+/* ===== SEOセクション（FAQ・使い方・更新履歴） ===== */
+.seo-section {
+  margin-top: 48px;
+  border-top: 1px solid var(--border);
+  padding-top: 32px;
+}
+
+.seo-section__title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  margin-top: 24px;
+  border-left: 3px solid var(--red);
+  padding-left: 10px;
+}
+.seo-section__title:first-child { margin-top: 0; }
+
+.seo-section__text {
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.8;
+}
+
+.seo-section__list {
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.9;
+  padding-left: 20px;
+}
+
+.seo-section__faq {
+  display: grid;
+  gap: 0;
+}
+.seo-section__faq dt {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  margin-top: 12px;
+}
+.seo-section__faq dd {
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.7;
+  margin-left: 0;
+  padding-left: 12px;
+  border-left: 2px solid var(--border);
+  margin-top: 3px;
+}
+
+.seo-section__disclaimer {
+  font-size: 11px;
+  color: var(--text-dim);
+  opacity: 0.5;
+  margin-top: 28px;
+  line-height: 1.6;
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 600px) {
   .header {
