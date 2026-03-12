@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- VALORANT dark background -->
+  <rect width="32" height="32" rx="3" fill="#0f1923"/>
+  <!-- V shape - left arm -->
+  <polygon points="2,4 11,4 16,27 8,27" fill="#ff4655"/>
+  <!-- V shape - right arm -->
+  <polygon points="21,4 30,4 24,27 16,27" fill="#ff4655"/>
+</svg>
