@@ -35,7 +35,7 @@ defineEmits(['showLegal'])
           <button class="footer-legal__link" @click="$emit('showLegal', 'cookie')">Cookieポリシー</button>
         </div>
         <div class="footer-copy">
-          © 2026 VALORANT RANDOM zen.
+          © 2026 VALORANT RANDOM.　このサイトはRiot Gamesの公認・承認を受けたものではありません。VALORANTはRiot Games, Inc.の登録商標です。
         </div>
       </div>
 
