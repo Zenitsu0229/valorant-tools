@@ -1,9 +1,9 @@
 <script setup>
 import { ref, reactive, nextTick, watch } from 'vue'
-import { useSharedTeam } from '../../composables/useSharedTeam'
-import { AGENTS } from '../../constants/agents'
-import { ROLE_LABELS, ROLES_INIT, ROLE_PRESETS } from '../../constants/roles'
-import AgentBanBoard from '../../components/AgentBanBoard.vue'
+import { useSharedTeam } from '@/composables/useSharedTeam'
+import { AGENTS } from '@/constants/agents'
+import { ROLE_LABELS, ROLES_INIT, ROLE_PRESETS } from '@/constants/roles'
+import AgentBanBoard from '@/components/AgentBanBoard.vue'
 import './Agent5v5.css'
 
 const MAX_SIZE = 5

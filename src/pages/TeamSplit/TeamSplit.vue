@@ -1,7 +1,7 @@
 <script setup>
 import { ref, reactive, computed, nextTick } from 'vue'
-import { HANDICAPS } from '../../constants/handicaps'
-import { useSharedTeam } from '../../composables/useSharedTeam'
+import { HANDICAPS } from '@/constants/handicaps'
+import { useSharedTeam } from '@/composables/useSharedTeam'
 import './TeamSplit.css'
 
 const emit = defineEmits(['go-custom'])

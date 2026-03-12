@@ -1,6 +1,6 @@
 <script setup>
 import { ref, reactive, nextTick } from 'vue'
-import { MAPS } from '../../constants/maps'
+import { MAPS } from '@/constants/maps'
 import './Map.css'
 
 const maps      = reactive(MAPS.map(m => ({ ...m, excluded: false })))

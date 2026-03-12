@@ -1,8 +1,8 @@
 <script setup>
 import { ref, reactive, nextTick } from 'vue'
-import { AGENTS } from '../../constants/agents'
-import { ROLE_LABELS, ROLES_INIT, ROLE_PRESETS } from '../../constants/roles'
-import AgentBanBoard from '../../components/AgentBanBoard.vue'
+import { AGENTS } from '@/constants/agents'
+import { ROLE_LABELS, ROLES_INIT, ROLE_PRESETS } from '@/constants/roles'
+import AgentBanBoard from '@/components/AgentBanBoard.vue'
 import './Agent5.css'
 
 const MAX_SIZE = 5

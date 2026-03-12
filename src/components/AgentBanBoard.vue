@@ -1,7 +1,7 @@
 <script setup>
 import { ref, reactive, computed } from 'vue'
-import { AGENTS } from '../constants/agents'
-import { ROLE_LABELS } from '../constants/roles'
+import { AGENTS } from '@/constants/agents'
+import { ROLE_LABELS } from '@/constants/roles'
 import './AgentBanBoard.css'
 
 const props = defineProps({

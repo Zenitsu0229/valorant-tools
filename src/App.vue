@@ -1,17 +1,17 @@
 <script setup>
 import { ref } from 'vue'
 import { SpeedInsights } from '@vercel/speed-insights/vue'
-import AppHeader      from './components/AppHeader.vue'
-import AppFooter      from './components/AppFooter.vue'
-import Agent5         from './pages/Agent5/Agent5.vue'
-import Agent5v5       from './pages/Agent5v5/Agent5v5.vue'
-import Map            from './pages/Map/Map.vue'
-import TeamSplit      from './pages/TeamSplit/TeamSplit.vue'
-import Contact        from './pages/Contact/Contact.vue'
-import PrivacyPolicy  from './pages/Legal/PrivacyPolicy.vue'
-import TermsOfService from './pages/Legal/TermsOfService.vue'
-import CookiePolicy   from './pages/Legal/CookiePolicy.vue'
-import './pages/Legal/Legal.css'
+import AppHeader      from '@/components/AppHeader.vue'
+import AppFooter      from '@/components/AppFooter.vue'
+import Agent5         from '@/pages/Agent5/Agent5.vue'
+import Agent5v5       from '@/pages/Agent5v5/Agent5v5.vue'
+import Map            from '@/pages/Map/Map.vue'
+import TeamSplit      from '@/pages/TeamSplit/TeamSplit.vue'
+import Contact        from '@/pages/Contact/Contact.vue'
+import PrivacyPolicy  from '@/pages/Legal/PrivacyPolicy.vue'
+import TermsOfService from '@/pages/Legal/TermsOfService.vue'
+import CookiePolicy   from '@/pages/Legal/CookiePolicy.vue'
+import '@/pages/Legal/Legal.css'
 
 const tabs = [
   { key: 'agent5',     label: 'Random' },
