@@ -14,10 +14,10 @@ import CookiePolicy   from './pages/Legal/CookiePolicy.vue'
 import './pages/Legal/Legal.css'
 
 const tabs = [
-  { key: 'agent5',     label: 'Competitive' },
+  { key: 'agent5',     label: 'Random' },
   { key: 'agent5v5',   label: 'Custom' },
   { key: 'map',        label: 'Map' },
-  { key: 'teamsplit',  label: 'Team Split' },
+  { key: 'teamsplit',  label: 'Team' },
   { key: 'contact',    label: 'Contact' },
 ]
 
