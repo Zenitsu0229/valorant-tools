@@ -319,42 +319,6 @@ function rollAgents() {
       </div>
     </div>
 
-    <!-- SEOコンテンツ：FAQ・使い方・更新履歴 -->
-    <section class="seo-section">
-      <h2 class="seo-section__title">VALORANTランダムピックとは？</h2>
-      <p class="seo-section__text">VALORANTのキャラ（エージェント）やマップを公平にランダム決定できる無料Webツールです。フルパでのカスタムゲームや縛りプレイ・トロールルーレット・スクリム時のキャラ被り防止などに活用できます。スマホ・PC対応、アカウント登録不要。</p>
-
-      <h2 class="seo-section__title">使い方</h2>
-      <ol class="seo-section__list">
-        <li>バンしたいエージェントをタップして除外（任意）</li>
-        <li>プレイヤー名を入力（空欄でも可・1〜5人対応）</li>
-        <li>各プレイヤーのロールを絞り込む（任意）</li>
-        <li>「抽選開始」ボタンを押すとルーレット演出後に各プレイヤーへエージェントが割り振られる</li>
-      </ol>
-
-      <h2 class="seo-section__title">よくある質問</h2>
-      <dl class="seo-section__faq">
-        <dt>無料で使えますか？</dt>
-        <dd>はい、完全無料。アカウント登録・ログイン不要です。</dd>
-        <dt>スマホでも使えますか？</dt>
-        <dd>スマートフォン・タブレット・PCすべてに対応しています。</dd>
-        <dt>チーム内でエージェントが被ることはありますか？</dt>
-        <dd>同じチーム内での重複は発生しません。</dd>
-        <dt>最新エージェントに対応していますか？</dt>
-        <dd>2026年3月時点の全エージェント（25体）に対応しています。随時更新予定。</dd>
-        <dt>5v5カスタムには使えますか？</dt>
-        <dd>「Custom」タブでTEAM AとTEAM Bそれぞれ最大5人ずつ設定して抽選できます。</dd>
-      </dl>
-
-      <h2 class="seo-section__title">更新履歴</h2>
-      <ul class="seo-section__list">
-        <li>2026/03 — ヴァイン追加対応・チームランダム分け機能追加・一括入力UI改善</li>
-        <li>2025 — クローヴ追加対応・UI全面リニューアル</li>
-        <li>2024 — アイソ追加対応</li>
-      </ul>
-
-      <p class="seo-section__disclaimer">このサイトはRiot Gamesの公認・承認を受けたものではありません。VALORANTはRiot Games, Inc.の登録商標です。</p>
-    </section>
 
   </div>
 </template>
