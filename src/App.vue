@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue'
-import { SpeedInsights } from '@vercel/speed-insights/vue'
+import { injectSpeedInsights } from '@vercel/speed-insights'
+injectSpeedInsights()
 import AppHeader      from '@/components/AppHeader.vue'
 import AppFooter      from '@/components/AppFooter.vue'
 import Agent5         from '@/pages/Agent5/Agent5.vue'
@@ -65,5 +66,4 @@ function closeLegal() {
 
   <AppFooter @showLegal="openLegal" />
 
-  <SpeedInsights />
 </template>
