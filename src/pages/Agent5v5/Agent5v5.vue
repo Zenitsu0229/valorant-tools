@@ -32,8 +32,22 @@ const showBulkInputB = ref(false)
 const bulkTextA      = ref('')
 const bulkTextB      = ref('')
 
+function makeBulkTemplate(size) {
+  return Array.from({ length: size }, (_, i) => `${i + 1}人目：`).join('\n')
+}
+function toggleBulkInputA() {
+  showBulkInputA.value = !showBulkInputA.value
+  bulkTextA.value = showBulkInputA.value ? makeBulkTemplate(MAX_SIZE) : ''
+}
+function toggleBulkInputB() {
+  showBulkInputB.value = !showBulkInputB.value
+  bulkTextB.value = showBulkInputB.value ? makeBulkTemplate(MAX_SIZE) : ''
+}
+
 function applyBulkForTeam(team, bulkText, showBulkInput) {
-  const lines = bulkText.value.split('\n').map(l => l.trim()).filter(l => l)
+  const lines = bulkText.value.split('\n')
+    .map(l => l.replace(/^\d+人目[：:]\s*/, '').trim())
+    .filter(l => l)
   if (!lines.length) return
   const newSize = Math.min(Math.max(lines.length, MIN_SIZE), MAX_SIZE)
   while (team.length < newSize) team.push(makePlayer(team.length + 1))
@@ -248,7 +262,7 @@ function rollAgents() {
               class="bulk-toggle-btn"
               :class="{ 'bulk-toggle-btn--active': showBulkInputA }"
               :disabled="isRolling"
-              @click="showBulkInputA = !showBulkInputA; bulkTextA = ''"
+              @click="toggleBulkInputA"
             >📋 一括入力</button>
           </div>
         </div>
@@ -257,13 +271,13 @@ function rollAgents() {
             <textarea
               class="bulk-textarea"
               v-model="bulkTextA"
-              placeholder="Player1&#10;Player2&#10;Player3..."
+              :rows="MAX_SIZE"
               @paste="onBulkPasteA"
               :disabled="isRolling"
             ></textarea>
             <div class="bulk-actions">
-              <button class="bulk-apply-btn" @click="applyBulkA" :disabled="!bulkTextA.trim() || isRolling">適用</button>
-              <button class="bulk-close-btn" @click="showBulkInputA = false; bulkTextA = ''">閉じる</button>
+              <button class="bulk-apply-btn" @click="applyBulkA" :disabled="isRolling">適用</button>
+              <button class="bulk-close-btn" @click="toggleBulkInputA">閉じる</button>
               <span class="bulk-hint">貼り付けで自動適用</span>
             </div>
           </div>
@@ -323,7 +337,7 @@ function rollAgents() {
               class="bulk-toggle-btn"
               :class="{ 'bulk-toggle-btn--active': showBulkInputB }"
               :disabled="isRolling"
-              @click="showBulkInputB = !showBulkInputB; bulkTextB = ''"
+              @click="toggleBulkInputB"
             >📋 一括入力</button>
           </div>
         </div>
@@ -332,13 +346,13 @@ function rollAgents() {
             <textarea
               class="bulk-textarea"
               v-model="bulkTextB"
-              placeholder="Player1&#10;Player2&#10;Player3..."
+              :rows="MAX_SIZE"
               @paste="onBulkPasteB"
               :disabled="isRolling"
             ></textarea>
             <div class="bulk-actions">
-              <button class="bulk-apply-btn" @click="applyBulkB" :disabled="!bulkTextB.trim() || isRolling">適用</button>
-              <button class="bulk-close-btn" @click="showBulkInputB = false; bulkTextB = ''">閉じる</button>
+              <button class="bulk-apply-btn" @click="applyBulkB" :disabled="isRolling">適用</button>
+              <button class="bulk-close-btn" @click="toggleBulkInputB">閉じる</button>
               <span class="bulk-hint">貼り付けで自動適用</span>
             </div>
           </div>

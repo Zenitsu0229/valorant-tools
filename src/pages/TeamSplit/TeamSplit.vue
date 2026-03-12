@@ -46,19 +46,37 @@ const resultAreaRef = ref(null)
 const playerListRef = ref(null)
 
 const showBulkInput = ref(false)
-const bulkText      = ref('')
+const bulkNames     = ref(Array.from({ length: MAX_PLAYERS }, () => ''))
+
+function toggleBulkInput() {
+  showBulkInput.value = !showBulkInput.value
+  if (showBulkInput.value) {
+    bulkNames.value = Array.from({ length: MAX_PLAYERS }, () => '')
+  }
+}
 
 function applyBulk() {
-  const lines = bulkText.value.split('\n').map(l => l.trim()).filter(l => l)
-  if (!lines.length) return
-  const newSize = Math.min(Math.max(lines.length, MIN_PLAYERS), MAX_PLAYERS)
+  const names = bulkNames.value.map(n => n.trim()).filter(n => n)
+  if (!names.length) return
+  const newSize = Math.min(Math.max(names.length, MIN_PLAYERS), MAX_PLAYERS)
   while (players.length < newSize) players.push(makePlayer(players.length + 1))
   while (players.length > newSize) players.pop()
-  lines.forEach((name, i) => { if (i < players.length) players[i].name = name })
-  bulkText.value = ''
+  names.forEach((name, i) => { if (i < players.length) players[i].name = name })
+  bulkNames.value = Array.from({ length: MAX_PLAYERS }, () => '')
   showBulkInput.value = false
 }
-function onBulkPaste() { nextTick(applyBulk) }
+
+function onBulkPaste(e, startIdx) {
+  const text = e.clipboardData?.getData('text') ?? ''
+  const lines = text.split('\n').map(l => l.replace(/^\d+人目[：:]\s*/, '').trim())
+  if (lines.length <= 1) return
+  e.preventDefault()
+  lines.forEach((name, i) => {
+    const idx = startIdx + i
+    if (idx < MAX_PLAYERS) bulkNames.value[idx] = name
+  })
+  nextTick(applyBulk)
+}
 
 function focusNextInput(idx) {
   const inputs = playerListRef.value?.querySelectorAll('input[type="text"]')
@@ -251,22 +269,29 @@ function splitTeams() {
         class="bulk-toggle-btn"
         :class="{ 'bulk-toggle-btn--active': showBulkInput }"
         :disabled="isRolling"
-        @click="showBulkInput = !showBulkInput; bulkText = ''"
+        @click="toggleBulkInput"
       >📋 一括入力</button>
     </div>
 
     <Transition name="bulk-panel">
       <div v-if="showBulkInput" class="bulk-panel">
-        <textarea
-          class="bulk-textarea"
-          v-model="bulkText"
-          placeholder="Player1&#10;Player2&#10;Player3..."
-          @paste="onBulkPaste"
-          :disabled="isRolling"
-        ></textarea>
+        <div class="bulk-rows">
+          <div v-for="n in MAX_PLAYERS" :key="n" class="bulk-row">
+            <span class="bulk-label">{{ n }}人目：</span>
+            <input
+              class="bulk-input"
+              type="text"
+              v-model="bulkNames[n - 1]"
+              :placeholder="`Player ${n}`"
+              maxlength="20"
+              :disabled="isRolling"
+              @paste="e => onBulkPaste(e, n - 1)"
+            />
+          </div>
+        </div>
         <div class="bulk-actions">
-          <button class="bulk-apply-btn" @click="applyBulk" :disabled="!bulkText.trim() || isRolling">適用</button>
-          <button class="bulk-close-btn" @click="showBulkInput = false; bulkText = ''">閉じる</button>
+          <button class="bulk-apply-btn" @click="applyBulk" :disabled="isRolling">適用</button>
+          <button class="bulk-close-btn" @click="toggleBulkInput">閉じる</button>
           <span class="bulk-hint">貼り付けで自動適用</span>
         </div>
       </div>

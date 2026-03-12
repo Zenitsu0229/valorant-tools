@@ -300,27 +300,45 @@ main {
 .bulk-panel-enter-from   { opacity: 0; transform: translateY(-4px); }
 .bulk-panel-leave-to     { opacity: 0; }
 
-.bulk-textarea {
-  width: 100%;
+.bulk-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.bulk-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bulk-label {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-dim);
+  min-width: 52px;
+  text-align: right;
+  flex-shrink: 0;
+  letter-spacing: 0.5px;
+}
+
+.bulk-input {
+  flex: 1;
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 3px;
   color: var(--text);
   font-family: 'Noto Sans JP', sans-serif;
-  font-size: 12px;
-  line-height: 1.7;
-  padding: 7px 10px;
-  resize: none;
+  font-size: 13px;
+  padding: 5px 8px;
   outline: none;
   box-sizing: border-box;
-  height: 90px;
+  transition: border-color 0.15s;
 }
-.bulk-textarea:focus { border-color: #7dd3fc; }
-.bulk-textarea::placeholder {
-  color: var(--text-dim);
-  opacity: 0.55;
-  font-size: 11px;
-}
+.bulk-input:focus { border-color: #7dd3fc; }
+.bulk-input::placeholder { color: var(--text-dim); opacity: 0.45; font-size: 11px; }
+.bulk-input:disabled { opacity: 0.35; cursor: not-allowed; }
 
 .bulk-actions {
   display: flex;
