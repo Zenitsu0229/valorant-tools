@@ -1,8 +1,19 @@
+// Valorant API の画像ベース URL
 const BASE = 'https://media.valorant-api.com/agents'
 
-/** @type {{ name: string, role: string, icon: string, portrait: string }[]} */
+/**
+ * 全エージェント定義（2026年3月時点 / 25体）
+ * @type {{ name: string, role: string, icon: string, portrait: string }[]}
+ *
+ * - name:     日本語表記のエージェント名
+ * - role:     ロールキー（'duelist' | 'initiator' | 'controller' | 'sentinel'）
+ * - icon:     ロールピック画面などで使う小アイコン画像 URL
+ * - portrait: 結果カードで使うフルポートレート画像 URL
+ *
+ * 新エージェントを追加する場合はこのファイルに追記するだけで全ページに反映される。
+ */
 export const AGENTS = [
-  // ── デュエリスト ──────────────────────────────────────────
+  // ── デュエリスト（8体）─────────────────────────────
   {
     name: 'ジェット', role: 'duelist',
     icon:     `${BASE}/add6443a-41bd-e414-f6ad-e58d267f4e95/displayicon.png`,
@@ -43,7 +54,7 @@ export const AGENTS = [
     icon:     `${BASE}/df1cb487-4902-002e-5c17-d28e83e78588/displayicon.png`,
     portrait: `${BASE}/df1cb487-4902-002e-5c17-d28e83e78588/fullportrait.png`,
   },
-  // ── イニシエーター ────────────────────────────────────────
+  // ── イニシエーター（6体）──────────────────────────
   {
     name: 'ソーヴァ', role: 'initiator',
     icon:     `${BASE}/320b2a48-4d9b-a075-30f1-1f93a9b638fa/displayicon.png`,
@@ -74,7 +85,7 @@ export const AGENTS = [
     icon:     `${BASE}/601dbbe7-43ce-be57-2a40-4abd24953621/displayicon.png`,
     portrait: `${BASE}/601dbbe7-43ce-be57-2a40-4abd24953621/fullportrait.png`,
   },
-  // ── コントローラー ────────────────────────────────────────
+  // ── コントローラー（6体）──────────────────────────
   {
     name: 'ブリムストーン', role: 'controller',
     icon:     `${BASE}/9f0d8ba9-4140-b941-57d3-a7ad57c6b417/displayicon.png`,
@@ -105,7 +116,7 @@ export const AGENTS = [
     icon:     `${BASE}/1dbf2edd-4729-0984-3115-daa5eed44993/displayicon.png`,
     portrait: `${BASE}/1dbf2edd-4729-0984-3115-daa5eed44993/fullportrait.png`,
   },
-  // ── センチネル ────────────────────────────────────────────
+  // ── センチネル（6体）──────────────────────────────
   {
     name: 'キルジョイ', role: 'sentinel',
     icon:     `${BASE}/1e58de9c-4950-5125-93e9-a0aee9f98746/displayicon.png`,

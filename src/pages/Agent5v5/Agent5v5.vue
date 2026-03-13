@@ -6,35 +6,43 @@ import { ROLE_LABELS, ROLES_INIT, ROLE_PRESETS } from '@/constants/roles'
 import AgentBanBoard from '@/components/AgentBanBoard.vue'
 import './Agent5v5.css'
 
+// プレイヤー数の上限・下限
 const MAX_SIZE = 5
 const MIN_SIZE = 1
 
+// プレイヤーオブジェクトのファクトリ関数
 const makePlayer = (n) => ({
-  name: '',
+  name:        '',
   placeholder: `Player ${n}`,
-  roles: ROLES_INIT.map(r => ({ ...r })),
+  roles:       ROLES_INIT.map(r => ({ ...r })), // ディープコピーで各プレイヤーが独立した状態を持つ
 })
 
-// --- State ---
+// ---- チーム状態 ----
 const teamAName = ref('TEAM A')
 const teamBName = ref('TEAM B')
 const teamA = reactive(Array.from({ length: MAX_SIZE }, (_, i) => makePlayer(i + 1)))
 const teamB = reactive(Array.from({ length: MAX_SIZE }, (_, i) => makePlayer(i + 1)))
 
+// BANボードの参照（getPool でBANリストを参照するために使用）
 const banBoardRefA = ref(null)
 const banBoardRefB = ref(null)
 
+// 各チームのプリセット選択状態
 const activePresetA = ref(null)
 const activePresetB = ref(null)
 
+// ---- 一括入力 ----
+// TEAM A / TEAM B それぞれに独立した一括入力パネルを持つ
 const showBulkInputA = ref(false)
 const showBulkInputB = ref(false)
 const bulkTextA      = ref('')
 const bulkTextB      = ref('')
 
+// テキストエリアの初期テンプレートを生成（「1人目：」などのプレフィックス付き）
 function makeBulkTemplate(size) {
   return Array.from({ length: size }, (_, i) => `${i + 1}人目：`).join('\n')
 }
+
 function toggleBulkInputA() {
   showBulkInputA.value = !showBulkInputA.value
   bulkTextA.value = showBulkInputA.value ? makeBulkTemplate(MAX_SIZE) : ''
@@ -44,70 +52,93 @@ function toggleBulkInputB() {
   bulkTextB.value = showBulkInputB.value ? makeBulkTemplate(MAX_SIZE) : ''
 }
 
+/**
+ * テキストエリアの内容を解析してチームに反映する共通処理
+ * team: 対象チーム配列（teamA または teamB）
+ * bulkText: テキストエリアの ref
+ * showBulkInput: パネルの表示状態 ref
+ */
 function applyBulkForTeam(team, bulkText, showBulkInput) {
   const lines = bulkText.value.split('\n')
-    .map(l => l.replace(/^\d+人目[：:]\s*/, '').trim())
+    .map(l => l.replace(/^\d+人目[：:]\s*/, '').trim()) // プレフィックスを除去
     .filter(l => l)
   if (!lines.length) return
   const newSize = Math.min(Math.max(lines.length, MIN_SIZE), MAX_SIZE)
   while (team.length < newSize) team.push(makePlayer(team.length + 1))
   while (team.length > newSize) team.pop()
   lines.forEach((name, i) => { if (i < team.length) team[i].name = name })
-  bulkText.value = ''
+  bulkText.value      = ''
   showBulkInput.value = false
 }
+
 function applyBulkA() { applyBulkForTeam(teamA, bulkTextA, showBulkInputA) }
 function applyBulkB() { applyBulkForTeam(teamB, bulkTextB, showBulkInputB) }
+// ペースト後に nextTick で適用（DOM 更新を待ってから処理）
 function onBulkPasteA() { nextTick(applyBulkA) }
 function onBulkPasteB() { nextTick(applyBulkB) }
 
-const results     = ref(null)
-const rollingRows = ref(null)
+// ---- ルーレット状態 ----
+const results     = ref(null)   // 確定結果 { a: [...], b: [...] }
+const rollingRows = ref(null)   // ルーレット中の表示データ { a: [...], b: [...] }
 const isRolling   = ref(false)
 const error       = ref('')
-const toastMsg    = ref('')
-let toastTimer    = null
+
+// ---- トースト通知 ----
+const toastMsg = ref('')
+let toastTimer = null
 
 function showToast(msg) {
   toastMsg.value = msg
   clearTimeout(toastTimer)
+  // 3秒後に自動消去
   toastTimer = setTimeout(() => { toastMsg.value = '' }, 3000)
 }
 
-// --- Team Split からのプレイヤー名引き継ぎ ---
+// ---- TeamSplit からのプレイヤー名引き継ぎ ----
 const { pendingTeams, consumeTeams } = useSharedTeam()
+
+/**
+ * pendingTeams を監視して、値がセットされたら自動的にチームへ反映する
+ * immediate: true で初期マウント時にも実行（ページ切り替え前にセットされた場合を考慮）
+ */
 watch(pendingTeams, (val) => {
   if (!val) return
-  const { a, b } = consumeTeams()
+  const { a, b } = consumeTeams() // データを取得して pendingTeams をクリア
 
+  // 受け取り前の状態をリセット
   results.value     = null
   rollingRows.value = null
   isRolling.value   = false
   error.value       = ''
 
+  // TEAM A にプレイヤー名を反映（チームサイズも調整）
   while (teamA.length > Math.max(a.length, 1)) teamA.pop()
-  while (teamA.length < a.length) teamA.push(makePlayer(teamA.length + 1))
+  while (teamA.length < a.length)              teamA.push(makePlayer(teamA.length + 1))
   a.forEach((name, i) => { teamA[i].name = name })
 
+  // TEAM B にプレイヤー名を反映
   while (teamB.length > Math.max(b.length, 1)) teamB.pop()
-  while (teamB.length < b.length) teamB.push(makePlayer(teamB.length + 1))
+  while (teamB.length < b.length)              teamB.push(makePlayer(teamB.length + 1))
   b.forEach((name, i) => { teamB[i].name = name })
 
   window.scrollTo({ top: 0, behavior: 'smooth' })
   nextTick(() => showToast('ユーザー名を設定しました。'))
 }, { immediate: true })
 
-const rollBtnRef      = ref(null)
-const rollingAreaRef  = ref(null)
-const resultAreaRef   = ref(null)
-const playerListRefA  = ref(null)
-const playerListRefB  = ref(null)
+// DOM 参照（スクロール・フォーカス制御）
+const rollBtnRef     = ref(null)
+const rollingAreaRef = ref(null)
+const resultAreaRef  = ref(null)
+const playerListRefA = ref(null)
+const playerListRefB = ref(null)
 
+// Enter キーで次の入力フィールドへフォーカスを移動
 function focusNextInput(listRef, idx) {
   const inputs = listRef.value?.querySelectorAll('input[type="text"]')
   if (inputs?.[idx + 1]) inputs[idx + 1].focus()
 }
 
+// ヘッダー高さを考慮したスムーズスクロール
 function scrollTo(el) {
   if (!el) return
   const headerH = document.querySelector('.sticky-top')?.offsetHeight ?? 0
@@ -115,7 +146,7 @@ function scrollTo(el) {
   window.scrollTo({ top, behavior: 'smooth' })
 }
 
-// --- プレイヤー追加・削除 ---
+// ---- プレイヤー追加・削除 ----
 function addTeamPlayer(team) {
   if (isRolling.value || team.length >= MAX_SIZE) return
   team.push(makePlayer(team.length + 1))
@@ -126,10 +157,11 @@ function removeTeamPlayer(team) {
   team.pop()
 }
 
-// --- ロール操作 ---
+// ---- ロール操作 ----
 function toggleRole(player, roleKey, teamKey) {
   const r = player.roles.find(r => r.key === roleKey)
   if (r) r.active = !r.active
+  // どちらのチームのチップか判定してプリセット選択状態をリセット
   if (teamKey === 'a') activePresetA.value = null
   else                 activePresetB.value = null
 }
@@ -145,19 +177,33 @@ function applyPreset(team, preset, teamKey) {
   else                 activePresetB.value = preset.key
 }
 
-// --- プレイヤーのプール取得 ---
+// ---- エージェントプール取得 ----
+/**
+ * 指定プレイヤーが選べるエージェント候補を返す
+ * banned: そのチームのBANセット（チームごとに独立）
+ * usedNames: 同チーム内で既に割り当てられたエージェント名（重複防止）
+ */
 function getPool(player, banned, usedNames = []) {
   const activeKeys = player.roles.filter(r => r.active).map(r => r.key)
+
   let pool = AGENTS.filter(a => activeKeys.includes(a.role) && !banned.has(a.name))
   if (pool.length === 0) pool = AGENTS.filter(a => !banned.has(a.name))
   if (pool.length === 0) pool = [...AGENTS]
-  pool = pool.filter(a => !usedNames.includes(a.name))
+
+  pool = pool.filter(a => !usedNames.includes(a.name)) // 重複排除
   if (pool.length === 0) pool = AGENTS.filter(a => activeKeys.includes(a.role))
   if (pool.length === 0) pool = [...AGENTS]
+
   return pool
 }
 
-// --- ランダム割り振り ---
+// ---- ルーレット演出定数 ----
+const LOCK_BASE     = 1000 // 最初のプレイヤーがロックされるまで（ms）
+const LOCK_INTERVAL = 1000 // プレイヤーごとのロック間隔（ms）
+const SLOWDOWN_SPAN = 900  // ロック前にスローダウンを開始するタイミング（ms 前から）
+const LOCK_DELAY    = 350  // 全員ロック後、結果表示に切り替えるまでの待機時間（ms）
+
+// ---- ランダム割り振り & ルーレット開始 ----
 function rollAgents() {
   if (isRolling.value) return
   error.value = ''
@@ -165,6 +211,7 @@ function rollAgents() {
   const bannedA = banBoardRefA.value?.banned ?? new Set()
   const bannedB = banBoardRefB.value?.banned ?? new Set()
 
+  // チームごとにエージェントをランダム割り振りする共通処理
   const calcTeam = (team, banned) => {
     const usedNames = []
     return team.map(p => {
@@ -180,36 +227,40 @@ function rollAgents() {
 
   results.value     = null
   isRolling.value   = true
+  // ルーレット初期表示データ（両チーム分）
   rollingRows.value = {
     a: finalA.map((r, i) => ({ player: r.player, displayAgent: AGENTS[Math.floor(Math.random() * AGENTS.length)], locked: false, index: i })),
     b: finalB.map((r, i) => ({ player: r.player, displayAgent: AGENTS[Math.floor(Math.random() * AGENTS.length)], locked: false, index: i })),
   }
   nextTick(() => scrollTo(rollBtnRef.value))
 
-  const LOCK_BASE     = 1000
-  const LOCK_INTERVAL = 1000
-  const SLOWDOWN_SPAN = 900
-  let lockedCount = 0
+  let lockedCount    = 0
   const totalPlayers = teamA.length + teamB.length
 
+  // TEAM A と TEAM B のエントリを1つの配列にまとめてループ処理
   ;[...finalA.map((f, i) => ({ team: 'a', idx: i, final: f })),
     ...finalB.map((f, i) => ({ team: 'b', idx: i, final: f }))
   ].forEach(({ team, idx, final }) => {
     const lockAt     = LOCK_BASE + idx * LOCK_INTERVAL
     const slowdownAt = lockAt - SLOWDOWN_SPAN
 
+    /**
+     * 再帰的な setTimeout でルーレット表現
+     * プレイヤーのインデックスに基づいて A・B の両チームが同時進行する
+     */
     function tick(elapsed) {
       if (elapsed >= lockAt) {
         rollingRows.value[team][idx].displayAgent = final.agent
         rollingRows.value[team][idx].locked = true
         lockedCount++
+        // 全プレイヤーがロックされたら結果表示へ
         if (lockedCount === totalPlayers) {
           setTimeout(() => {
             results.value     = { a: finalA, b: finalB }
             rollingRows.value = null
             isRolling.value   = false
             nextTick(() => scrollTo(resultAreaRef.value))
-          }, 350)
+          }, LOCK_DELAY)
         }
         return
       }
@@ -229,12 +280,12 @@ function rollAgents() {
     <h1 class="section-title">5v5 VALORANTキャラ ランダムピック</h1>
     <p class="section-desc">カスタムゲーム用 — TEAM A・TEAM Bそれぞれ1〜5人のキャラをランダム割り振り。チーム別バン・ロール設定対応。</p>
 
-    <!-- インラインメッセージ -->
+    <!-- Team Split からの引き継ぎ通知トースト -->
     <Transition name="toast">
       <div v-if="toastMsg" class="a5v5-toast">{{ toastMsg }}</div>
     </Transition>
 
-    <!-- チーム入力 -->
+    <!-- 2カラムのチーム入力エリア -->
     <div class="team-grid">
 
       <!-- TEAM A -->
@@ -246,7 +297,7 @@ function rollAgents() {
             <div class="size-control">
               <button class="size-btn" @click="removeTeamPlayer(teamA)" :disabled="isRolling || teamA.length <= 1">−</button>
               <span class="size-display">{{ teamA.length }}<span class="size-max">/5</span></span>
-              <button class="size-btn" @click="addTeamPlayer(teamA)" :disabled="isRolling || teamA.length >= 5">＋</button>
+              <button class="size-btn" @click="addTeamPlayer(teamA)"    :disabled="isRolling || teamA.length >= 5">＋</button>
             </div>
             <div class="preset-bar">
               <button
@@ -309,10 +360,10 @@ function rollAgents() {
         </div>
       </div>
 
-      <!-- VS -->
+      <!-- VS 区切り -->
       <div class="vs-divider"><span>VS</span></div>
 
-      <!-- TEAM B -->
+      <!-- TEAM B（TEAM A と対称的な構成） -->
       <div class="team-card team-card--b">
         <div class="team-card__header">
           <span class="team-card__dot team-card__dot--b"></span>
@@ -321,7 +372,7 @@ function rollAgents() {
             <div class="size-control">
               <button class="size-btn" @click="removeTeamPlayer(teamB)" :disabled="isRolling || teamB.length <= 1">−</button>
               <span class="size-display">{{ teamB.length }}<span class="size-max">/5</span></span>
-              <button class="size-btn" @click="addTeamPlayer(teamB)" :disabled="isRolling || teamB.length >= 5">＋</button>
+              <button class="size-btn" @click="addTeamPlayer(teamB)"    :disabled="isRolling || teamB.length >= 5">＋</button>
             </div>
             <div class="preset-bar">
               <button
@@ -388,11 +439,12 @@ function rollAgents() {
 
     <div v-if="error" class="notice">{{ error }}</div>
 
+    <!-- 抽選ボタン -->
     <button class="btn-primary" ref="rollBtnRef" @click="rollAgents" :disabled="isRolling">
       {{ isRolling ? '⚡ ROLLING...' : '⚡ 抽選開始' }}
     </button>
 
-    <!-- ルーレット中 -->
+    <!-- ルーレット演出エリア -->
     <div v-if="rollingRows" class="result-area" ref="rollingAreaRef">
       <div class="rolling-label">
         <span class="rolling-label__dot"></span>
@@ -400,6 +452,7 @@ function rollAgents() {
         <span class="rolling-label__dot"></span>
       </div>
       <div class="match-grid">
+        <!-- TEAM A ルーレット -->
         <div class="match-team">
           <div class="match-team__label match-team__label--a">{{ teamAName }}</div>
           <div class="rolling-col">
@@ -422,6 +475,7 @@ function rollAgents() {
 
         <div class="match-vs">VS</div>
 
+        <!-- TEAM B ルーレット -->
         <div class="match-team">
           <div class="match-team__label match-team__label--b">{{ teamBName }}</div>
           <div class="rolling-col">
@@ -444,10 +498,11 @@ function rollAgents() {
       </div>
     </div>
 
-    <!-- 確定結果 -->
+    <!-- 確定結果エリア -->
     <div v-if="results && !isRolling" class="result-area" ref="resultAreaRef">
       <div class="result-title">— 結果 —</div>
       <div class="match-grid">
+        <!-- TEAM A 結果 -->
         <div class="match-team">
           <div class="match-team__label match-team__label--a">{{ teamAName }}</div>
           <div class="result-col">
@@ -471,6 +526,7 @@ function rollAgents() {
 
         <div class="match-vs">VS</div>
 
+        <!-- TEAM B 結果 -->
         <div class="match-team">
           <div class="match-team__label match-team__label--b">{{ teamBName }}</div>
           <div class="result-col">
