@@ -35,47 +35,56 @@ const activePresetB = ref(null)
 // TEAM A / TEAM B それぞれに独立した一括入力パネルを持つ
 const showBulkInputA = ref(false)
 const showBulkInputB = ref(false)
-const bulkTextA      = ref('')
-const bulkTextB      = ref('')
-
-// テキストエリアの初期テンプレートを生成（「1人目：」などのプレフィックス付き）
-function makeBulkTemplate(size) {
-  return Array.from({ length: size }, (_, i) => `${i + 1}人目：`).join('\n')
-}
+const bulkNamesA     = ref(Array.from({ length: MAX_SIZE }, () => ''))
+const bulkNamesB     = ref(Array.from({ length: MAX_SIZE }, () => ''))
 
 function toggleBulkInputA() {
   showBulkInputA.value = !showBulkInputA.value
-  bulkTextA.value = showBulkInputA.value ? makeBulkTemplate(MAX_SIZE) : ''
+  if (showBulkInputA.value) bulkNamesA.value = Array.from({ length: MAX_SIZE }, () => '')
 }
 function toggleBulkInputB() {
   showBulkInputB.value = !showBulkInputB.value
-  bulkTextB.value = showBulkInputB.value ? makeBulkTemplate(MAX_SIZE) : ''
+  if (showBulkInputB.value) bulkNamesB.value = Array.from({ length: MAX_SIZE }, () => '')
 }
 
-/**
- * テキストエリアの内容を解析してチームに反映する共通処理
- * team: 対象チーム配列（teamA または teamB）
- * bulkText: テキストエリアの ref
- * showBulkInput: パネルの表示状態 ref
- */
-function applyBulkForTeam(team, bulkText, showBulkInput) {
-  const lines = bulkText.value.split('\n')
-    .map(l => l.replace(/^\d+人目[：:]\s*/, '').trim()) // プレフィックスを除去
-    .filter(l => l)
-  if (!lines.length) return
-  const newSize = Math.min(Math.max(lines.length, MIN_SIZE), MAX_SIZE)
+// 入力された名前配列をチームに反映する共通処理
+function applyBulkForTeam(team, bulkNames, showBulkInput) {
+  const names = bulkNames.value.map(n => n.trim()).filter(n => n)
+  if (!names.length) return
+  const newSize = Math.min(Math.max(names.length, MIN_SIZE), MAX_SIZE)
   while (team.length < newSize) team.push(makePlayer(team.length + 1))
   while (team.length > newSize) team.pop()
-  lines.forEach((name, i) => { if (i < team.length) team[i].name = name })
-  bulkText.value      = ''
+  names.forEach((name, i) => { if (i < team.length) team[i].name = name })
+  bulkNames.value     = Array.from({ length: MAX_SIZE }, () => '')
   showBulkInput.value = false
 }
 
-function applyBulkA() { applyBulkForTeam(teamA, bulkTextA, showBulkInputA) }
-function applyBulkB() { applyBulkForTeam(teamB, bulkTextB, showBulkInputB) }
-// ペースト後に nextTick で適用（DOM 更新を待ってから処理）
-function onBulkPasteA() { nextTick(applyBulkA) }
-function onBulkPasteB() { nextTick(applyBulkB) }
+function applyBulkA() { applyBulkForTeam(teamA, bulkNamesA, showBulkInputA) }
+function applyBulkB() { applyBulkForTeam(teamB, bulkNamesB, showBulkInputB) }
+
+// 複数行テキストの貼り付けを検知して自動適用
+function onBulkPasteA(e, startIdx) {
+  const text  = e.clipboardData?.getData('text') ?? ''
+  const lines = text.split('\n').map(l => l.replace(/^\d+人目[：:]\s*/, '').trim())
+  if (lines.length <= 1) return
+  e.preventDefault()
+  lines.forEach((name, i) => {
+    const idx = startIdx + i
+    if (idx < MAX_SIZE) bulkNamesA.value[idx] = name
+  })
+  nextTick(applyBulkA)
+}
+function onBulkPasteB(e, startIdx) {
+  const text  = e.clipboardData?.getData('text') ?? ''
+  const lines = text.split('\n').map(l => l.replace(/^\d+人目[：:]\s*/, '').trim())
+  if (lines.length <= 1) return
+  e.preventDefault()
+  lines.forEach((name, i) => {
+    const idx = startIdx + i
+    if (idx < MAX_SIZE) bulkNamesB.value[idx] = name
+  })
+  nextTick(applyBulkB)
+}
 
 // ---- ルーレット状態 ----
 const results     = ref(null)   // 確定結果 { a: [...], b: [...] }
@@ -155,6 +164,49 @@ function addTeamPlayer(team) {
 function removeTeamPlayer(team) {
   if (isRolling.value || team.length <= MIN_SIZE) return
   team.pop()
+}
+
+// ---- ドラッグアンドドロップ ----
+const dragSrc  = ref(null) // { team: 'a'|'b', idx: number }
+const dragOver = ref(null) // { team: 'a'|'b', idx: number }
+
+function onDragStart(team, idx, e) {
+  dragSrc.value = { team, idx }
+  e.dataTransfer.effectAllowed = 'move'
+}
+
+function onDragEnter(team, idx, e) {
+  e.preventDefault()
+  dragOver.value = { team, idx }
+}
+
+function onDragOver(e) {
+  e.preventDefault()
+  e.dataTransfer.dropEffect = 'move'
+}
+
+function onDrop(toTeam, toIdx, e) {
+  e.preventDefault()
+  if (!dragSrc.value) return
+  const { team: fromTeam, idx: fromIdx } = dragSrc.value
+  if (fromTeam === toTeam && fromIdx === toIdx) { dragSrc.value = dragOver.value = null; return }
+
+  const srcArr = fromTeam === 'a' ? teamA : teamB
+  const dstArr = toTeam   === 'a' ? teamA : teamB
+
+  // name と roles をスワップ（placeholder は番号のまま維持）
+  const tmpName  = srcArr[fromIdx].name
+  const tmpRoles = srcArr[fromIdx].roles.map(r => ({ ...r }))
+  srcArr[fromIdx].name  = dstArr[toIdx].name
+  srcArr[fromIdx].roles = dstArr[toIdx].roles.map(r => ({ ...r }))
+  dstArr[toIdx].name    = tmpName
+  dstArr[toIdx].roles   = tmpRoles
+
+  dragSrc.value = dragOver.value = null
+}
+
+function onDragEnd() {
+  dragSrc.value = dragOver.value = null
 }
 
 // ---- ロール操作 ----
@@ -319,23 +371,48 @@ function rollAgents() {
         </div>
         <Transition name="bulk-panel">
           <div v-if="showBulkInputA" class="bulk-panel">
-            <textarea
-              class="bulk-textarea"
-              v-model="bulkTextA"
-              :rows="MAX_SIZE"
-              @paste="onBulkPasteA"
-              :disabled="isRolling"
-            ></textarea>
+            <div class="bulk-paste-guide">
+              <span class="bulk-paste-guide__label">TIP</span>
+              <span>改行区切りのテキストをペーストすると自動で一括入力されます</span>
+              <span class="bulk-paste-guide__example">例: Player1 ↵ Player2 ↵ Player3</span>
+            </div>
+            <div class="bulk-rows">
+              <div v-for="n in MAX_SIZE" :key="n" class="bulk-row">
+                <span class="bulk-label">{{ n }}人目：</span>
+                <input
+                  class="bulk-input"
+                  type="text"
+                  v-model="bulkNamesA[n - 1]"
+                  :placeholder="`Player ${n}`"
+                  maxlength="20"
+                  :disabled="isRolling"
+                  @paste="e => onBulkPasteA(e, n - 1)"
+                />
+              </div>
+            </div>
             <div class="bulk-actions">
               <button class="bulk-apply-btn" @click="applyBulkA" :disabled="isRolling">適用</button>
               <button class="bulk-close-btn" @click="toggleBulkInputA">閉じる</button>
-              <span class="bulk-hint">貼り付けで自動適用</span>
             </div>
           </div>
         </Transition>
         <AgentBanBoard ref="banBoardRefA" :disabled="isRolling" />
         <div class="player-list" ref="playerListRefA">
-          <div v-for="(player, idx) in teamA" :key="idx" class="player-block">
+          <div
+            v-for="(player, idx) in teamA" :key="idx"
+            class="player-block"
+            :class="{
+              'player-block--dragging': dragSrc?.team === 'a' && dragSrc?.idx === idx,
+              'player-block--dragover': dragOver?.team === 'a' && dragOver?.idx === idx,
+            }"
+            :draggable="!isRolling"
+            @dragstart="e => onDragStart('a', idx, e)"
+            @dragenter="e => onDragEnter('a', idx, e)"
+            @dragover="onDragOver"
+            @drop="e => onDrop('a', idx, e)"
+            @dragend="onDragEnd"
+          >
+            <span class="player-drag-handle" :class="{ 'player-drag-handle--disabled': isRolling }">⠿</span>
             <span class="player-num">{{ String(idx + 1).padStart(2, '0') }}</span>
             <div class="player-block__inner">
               <input
@@ -394,23 +471,48 @@ function rollAgents() {
         </div>
         <Transition name="bulk-panel">
           <div v-if="showBulkInputB" class="bulk-panel">
-            <textarea
-              class="bulk-textarea"
-              v-model="bulkTextB"
-              :rows="MAX_SIZE"
-              @paste="onBulkPasteB"
-              :disabled="isRolling"
-            ></textarea>
+            <div class="bulk-paste-guide">
+              <span class="bulk-paste-guide__label">TIP</span>
+              <span>改行区切りのテキストをペーストすると自動で一括入力されます</span>
+              <span class="bulk-paste-guide__example">例: Player1 ↵ Player2 ↵ Player3</span>
+            </div>
+            <div class="bulk-rows">
+              <div v-for="n in MAX_SIZE" :key="n" class="bulk-row">
+                <span class="bulk-label">{{ n }}人目：</span>
+                <input
+                  class="bulk-input"
+                  type="text"
+                  v-model="bulkNamesB[n - 1]"
+                  :placeholder="`Player ${n}`"
+                  maxlength="20"
+                  :disabled="isRolling"
+                  @paste="e => onBulkPasteB(e, n - 1)"
+                />
+              </div>
+            </div>
             <div class="bulk-actions">
               <button class="bulk-apply-btn" @click="applyBulkB" :disabled="isRolling">適用</button>
               <button class="bulk-close-btn" @click="toggleBulkInputB">閉じる</button>
-              <span class="bulk-hint">貼り付けで自動適用</span>
             </div>
           </div>
         </Transition>
         <AgentBanBoard ref="banBoardRefB" :disabled="isRolling" />
         <div class="player-list" ref="playerListRefB">
-          <div v-for="(player, idx) in teamB" :key="idx" class="player-block">
+          <div
+            v-for="(player, idx) in teamB" :key="idx"
+            class="player-block"
+            :class="{
+              'player-block--dragging': dragSrc?.team === 'b' && dragSrc?.idx === idx,
+              'player-block--dragover': dragOver?.team === 'b' && dragOver?.idx === idx,
+            }"
+            :draggable="!isRolling"
+            @dragstart="e => onDragStart('b', idx, e)"
+            @dragenter="e => onDragEnter('b', idx, e)"
+            @dragover="onDragOver"
+            @drop="e => onDrop('b', idx, e)"
+            @dragend="onDragEnd"
+          >
+            <span class="player-drag-handle" :class="{ 'player-drag-handle--disabled': isRolling }">⠿</span>
             <span class="player-num">{{ String(idx + 1).padStart(2, '0') }}</span>
             <div class="player-block__inner">
               <input

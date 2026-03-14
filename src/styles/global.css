@@ -295,6 +295,36 @@ main {
   background: var(--bg3);
   border-bottom: 1px solid var(--border);
 }
+
+.bulk-paste-guide {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 6px 10px;
+  margin-bottom: 10px;
+  background: rgba(125, 211, 252, 0.05);
+  border: 1px solid rgba(125, 211, 252, 0.18);
+  border-left: 3px solid #7dd3fc;
+  border-radius: 3px;
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 0.3px;
+}
+.bulk-paste-guide__label {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 10px;
+  color: #7dd3fc;
+  letter-spacing: 1px;
+  flex-shrink: 0;
+}
+.bulk-paste-guide__example {
+  font-size: 10px;
+  color: var(--text-dim);
+  opacity: 0.6;
+  letter-spacing: 0.3px;
+}
 .bulk-panel-enter-active { transition: opacity 0.15s ease, transform 0.15s ease; }
 .bulk-panel-leave-active { transition: opacity 0.1s ease; }
 .bulk-panel-enter-from   { opacity: 0; transform: translateY(-4px); }
@@ -346,12 +376,7 @@ main {
   gap: 6px;
   margin-top: 6px;
 }
-.bulk-hint {
-  font-size: 10px;
-  color: var(--text-dim);
-  letter-spacing: 0.5px;
-  margin-left: auto;
-}
+
 .bulk-apply-btn {
   background: rgba(125, 211, 252, 0.12);
   border: 1px solid #7dd3fc;

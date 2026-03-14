@@ -251,6 +251,11 @@ function rollAgents() {
       <!-- 一括入力パネル（Transition でスライドイン） -->
       <Transition name="bulk-panel">
         <div v-if="showBulkInput" class="bulk-panel">
+          <div class="bulk-paste-guide">
+            <span class="bulk-paste-guide__label">TIP</span>
+            <span>改行区切りのテキストをペーストすると自動で一括入力されます</span>
+            <span class="bulk-paste-guide__example">例: Player1 ↵ Player2 ↵ Player3</span>
+          </div>
           <div class="bulk-rows">
             <div v-for="n in MAX_SIZE" :key="n" class="bulk-row">
               <span class="bulk-label">{{ n }}人目：</span>
@@ -268,7 +273,6 @@ function rollAgents() {
           <div class="bulk-actions">
             <button class="bulk-apply-btn" @click="applyBulk" :disabled="isRolling">適用</button>
             <button class="bulk-close-btn" @click="toggleBulkInput">閉じる</button>
-            <span class="bulk-hint">貼り付けで自動適用</span>
           </div>
         </div>
       </Transition>
