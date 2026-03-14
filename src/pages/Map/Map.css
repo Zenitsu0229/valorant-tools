@@ -513,9 +513,74 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
+/* ===== BO3 ===== */
+
+/* セパレーター */
+.map-preset-separator {
+  width: 1px;
+  height: 24px;
+  background: var(--border);
+  align-self: center;
+  flex-shrink: 0;
+}
+
+/* BO3ボタン（非アクティブ） */
+.map-preset-btn--bo3:hover {
+  border-color: var(--red);
+  color: var(--red);
+  background: rgba(255,70,85,0.08);
+}
+
+/* BO3ボタン（アクティブ） */
+.map-preset-btn--bo3-active {
+  border-color: var(--red);
+  color: #fff;
+  background: var(--red);
+}
+.map-preset-btn--bo3-active:hover {
+  background: rgba(255,70,85,0.85);
+}
+
+/* BO3 結果グリッド（3枚横並び） */
+.bo3-results {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.bo3-result-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* 1st / 2nd / 3rd ラベル */
+.bo3-result-round {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: var(--red);
+  text-align: center;
+  text-transform: uppercase;
+}
+
+/* BO3カードはアスペクト比を 16:9 に調整（横幅が狭くなるため） */
+.bo3-result-item .map-result {
+  aspect-ratio: 16 / 9;
+}
+
+/* BO3カード内のフォントサイズ調整 */
+.bo3-result-item .map-result__name  { font-size: 28px; letter-spacing: 3px; }
+.bo3-result-item .map-result__label { font-size: 9px;  letter-spacing: 3px; }
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 700px) {
   .map-grid { grid-template-columns: repeat(2, 1fr); }
   .roulette-display__name { font-size: 40px; }
   .map-result__name { font-size: 44px; }
+
+  /* BO3: モバイルでは縦積み */
+  .bo3-results { grid-template-columns: 1fr; }
+  .bo3-result-item .map-result__name { font-size: 44px; letter-spacing: 6px; }
 }
