@@ -329,8 +329,8 @@ function rollAgents() {
 
 <template>
   <div>
-    <h1 class="section-title">5v5 VALORANTキャラ ランダムピック</h1>
-    <p class="section-desc">カスタムゲーム用 — TEAM A・TEAM Bそれぞれ1〜5人のキャラをランダム割り振り。チーム別バン・ロール設定対応。</p>
+    <h1 class="section-title">VALORANT 5v5カスタム | チーム別エージェントランダムピック【無料】</h1>
+    <p class="section-desc">5v5カスタムゲーム向けにTEAM A・TEAM B各5人のエージェントをランダム割り振り。チームごとにバンフェーズ・ロール指定が独立して設定可能。スクリム・内輪カスタムのキャラ決めに最適。</p>
 
     <!-- Team Split からの引き継ぎ通知トースト -->
     <Transition name="toast">

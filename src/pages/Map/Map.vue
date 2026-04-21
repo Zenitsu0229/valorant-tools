@@ -163,8 +163,8 @@ function rollMap() {
 
 <template>
   <div>
-    <h1 class="section-title">VALORANTマップ ランダム・ルーレット</h1>
-    <p class="section-desc">プレイするマップをルーレットでランダム選択。除外機能・コンペティティブマップ絞り込み対応。</p>
+    <h1 class="section-title">VALORANTマップ ルーレット | コンペ専用フィルター対応【無料】</h1>
+    <p class="section-desc">VALORANTのマップをルーレットでランダム選択。コンペティティブマップのみ絞り込み・除外マップ指定・BO3対応。スクリムや内輪カスタムゲームのマップ決めに最適。</p>
 
     <!-- マッププリセットボタン / BO3モード切り替え -->
     <div class="map-preset-bar">

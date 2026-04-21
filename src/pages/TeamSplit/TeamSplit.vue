@@ -284,8 +284,8 @@ function splitTeams() {
 
 <template>
   <div>
-    <h1 class="section-title">チームランダム分け</h1>
-    <p class="section-desc">プレイヤーとランクを入力してチームをランダム振り分け。バランスモードでランク差を最小化。</p>
+    <h1 class="section-title">VALORANTチーム分けツール | バランス・ランダム・ハンデ対応【無料】</h1>
+    <p class="section-desc">2〜10人のプレイヤーをランダムにチーム分け。バランスモード（ランク差最小化）・ランダムモード・ハンデモードに対応。フルパや内輪カスタムのチーム決めに最適。</p>
 
     <!-- コントロールバー（人数・モード・一括入力） -->
     <div class="ts-control-bar">

@@ -211,8 +211,8 @@ function rollAgents() {
 
 <template>
   <div>
-    <h1 class="section-title">VALORANTキャラ ランダムピック・ルーレット</h1>
-    <p class="section-desc">1〜5人用 — キャラ（エージェント）をランダムピック。バン・ロール絞り込み対応。フルパ・縛りプレイ・トロールルーレットに最適。</p>
+    <h1 class="section-title">VALORANTエージェント ランダムピック | バン・ロール指定対応【無料】</h1>
+    <p class="section-desc">VALORANTのエージェント（キャラ）をルーレットでランダムピック。バン機能でキャラを除外・ロール指定（デュエリスト/イニシエーター/コントローラー/センチネル）で絞り込み可能。1〜5人対応。縛りプレイ・トロールルーレットにも最適。</p>
 
     <!-- バンフェーズ（ルーレット中は disabled） -->
     <AgentBanBoard ref="banBoardRef" :disabled="isRolling" />
