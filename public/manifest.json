@@ -1,12 +1,12 @@
 {
-  "name": "VAL RANDOM – VALORANTランダムピックツール",
+  "name": "VAL RANDOM – VALORANT Random Agent & Map Picker",
   "short_name": "VAL RANDOM",
-  "description": "VALORANTのエージェント・マップをランダムに選べる無料Webツール",
+  "description": "Free VALORANT random agent picker and map roulette. Ban phase, role filter, 5v5 custom game support.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0f1923",
   "theme_color": "#ff4655",
-  "lang": "ja",
+  "lang": "en",
   "icons": [
     { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" },
     { "src": "/favicon-16x16.png", "sizes": "16x16", "type": "image/png" },
