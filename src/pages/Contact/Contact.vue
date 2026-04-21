@@ -265,6 +265,7 @@ function categoryLabel(key) {
       <h2 class="seo-section__title">更新履歴</h2>
       <ul class="seo-section__list">
         <li>2026/03 — リリース開始</li>
+        <li>2026/04 — 各URLを追加</li>
       </ul>
 
       <p class="seo-section__disclaimer">このサイトはRiot Gamesの公認・承認を受けたものではありません。VALORANTはRiot Games, Inc.の登録商標です。</p>

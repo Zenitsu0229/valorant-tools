@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 // Vercel のパフォーマンス計測 SDK
 import { injectSpeedInsights } from '@vercel/speed-insights'
 injectSpeedInsights()
@@ -17,6 +17,12 @@ import TermsOfService from '@/pages/Legal/TermsOfService.vue'
 import CookiePolicy   from '@/pages/Legal/CookiePolicy.vue'
 import '@/pages/Legal/Legal.css'
 
+import { useRouter, useRoute } from 'vue-router'
+import { TAB_ROUTES } from '@/router/index.js'
+
+const router = useRouter()
+const route  = useRoute()
+
 // ナビゲーションタブ定義（key: 内部識別子, label: 表示名）
 const tabs = [
   { key: 'agent5',    label: 'Random'  },
@@ -27,16 +33,32 @@ const tabs = [
 ]
 
 // 現在アクティブなタブ（デフォルト: ランダムピック）
-const activeTab = ref('agent5')
+const activeTab = ref(route.meta.tab ?? 'agent5')
 
 // 表示中の法的ページ（null = 非表示, 'privacy' | 'terms' | 'cookie'）
 const legalPage = ref(null)
+
+// タブキーからURLパスを引く
+function pathForTab(tabKey) {
+  return TAB_ROUTES.find(r => r.tab === tabKey)?.path ?? '/agent-roulette'
+}
+
+// タブ切り替え時にURLも更新
+function setTab(key) {
+  activeTab.value = key
+  router.push(pathForTab(key))
+}
+
+// ブラウザ前後ボタン等でURLが変わったときにタブを同期
+watch(() => route.meta.tab, (tab) => {
+  if (tab && tab !== activeTab.value) activeTab.value = tab
+})
 
 // フッターのリーガルリンクをクリックしたときの処理
 // Contact タブに切り替えてからページトップへスクロールし、法的ページを表示する
 function openLegal(page) {
   legalPage.value = page
-  activeTab.value = 'contact' // 法的ページを閉じたときに Contact タブへ戻るように設定
+  setTab('contact') // 法的ページを閉じたときに Contact タブへ戻るように設定
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
@@ -48,7 +70,7 @@ function closeLegal() {
 
 <template>
   <!-- スティッキーヘッダー + タブナビゲーション -->
-  <AppHeader :tabs="tabs" :activeTab="activeTab" @update:activeTab="activeTab = $event" />
+  <AppHeader :tabs="tabs" :activeTab="activeTab" @update:activeTab="setTab($event)" />
 
   <main>
     <!-- 法的ページ表示中はタブコンテンツを非表示にしてこちらを表示 -->
@@ -74,7 +96,7 @@ function closeLegal() {
       <Agent5v5 v-show="activeTab === 'agent5v5'" />
       <Map      v-show="activeTab === 'map'" />
       <!-- TeamSplit から Custom タブへの遷移イベントを受け取る -->
-      <TeamSplit v-show="activeTab === 'teamsplit'" @go-custom="activeTab = 'agent5v5'" />
+      <TeamSplit v-show="activeTab === 'teamsplit'" @go-custom="setTab('agent5v5')" />
       <Contact   v-show="activeTab === 'contact'" />
     </template>
   </main>

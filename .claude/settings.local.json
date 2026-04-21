@@ -9,7 +9,8 @@
       "WebFetch(domain:support-valorant.riotgames.com)",
       "Bash(cd \"D:\\\\02_project\\\\valorant-tools\" && npm install @emailjs/browser)",
       "Bash(npm run:*)",
-      "Bash(cd D:/02_project/valorant-tools && npm install 2>&1 | tail -5)"
+      "Bash(cd D:/02_project/valorant-tools && npm install 2>&1 | tail -5)",
+      "Bash(npm install *)"
     ]
   }
 }
