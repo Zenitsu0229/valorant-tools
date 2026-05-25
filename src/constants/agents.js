@@ -2,7 +2,7 @@
 const BASE = 'https://media.valorant-api.com/agents'
 
 /**
- * 全エージェント定義（2026年3月時点 / 25体）
+ * 全エージェント定義（2026年5月時点 / 26体）
  * @type {{ name: string, role: string, icon: string, portrait: string }[]}
  *
  * - name:     日本語表記のエージェント名
@@ -85,7 +85,7 @@ export const AGENTS = [
     icon:     `${BASE}/601dbbe7-43ce-be57-2a40-4abd24953621/displayicon.png`,
     portrait: `${BASE}/601dbbe7-43ce-be57-2a40-4abd24953621/fullportrait.png`,
   },
-  // ── コントローラー（6体）──────────────────────────
+  // ── コントローラー（7体）──────────────────────────
   {
     name: 'ブリムストーン', role: 'controller',
     icon:     `${BASE}/9f0d8ba9-4140-b941-57d3-a7ad57c6b417/displayicon.png`,
@@ -115,6 +115,11 @@ export const AGENTS = [
     name: 'クローヴ', role: 'controller',
     icon:     `${BASE}/1dbf2edd-4729-0984-3115-daa5eed44993/displayicon.png`,
     portrait: `${BASE}/1dbf2edd-4729-0984-3115-daa5eed44993/fullportrait.png`,
+  },
+  {
+    name: 'ミクス', role: 'controller',
+    icon:     `${BASE}/7c8a4701-4de6-9355-b254-e09bc2a34b72/displayicon.png`,
+    portrait: `${BASE}/7c8a4701-4de6-9355-b254-e09bc2a34b72/fullportrait.png`,
   },
   // ── センチネル（6体）──────────────────────────────
   {

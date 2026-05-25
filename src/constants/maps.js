@@ -2,7 +2,7 @@
 const BASE = 'https://media.valorant-api.com/maps'
 
 /**
- * 全マップ定義（2026年3月時点 / 12マップ）
+ * 全マップ定義（2026年5月時点 / 12マップ）
  * @type {{ name: string, sub: string, splash: string, listIcon: string }[]}
  *
  * - name:     マップ英語名

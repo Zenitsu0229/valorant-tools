@@ -11,7 +11,7 @@ const error     = ref('')
 
 // ---- マッププリセット ----
 // コンペティティブで使用されるマップ
-const COMPETITIVE_MAPS = new Set(['Abyss', 'Bind', 'Breeze', 'Corrode', 'Haven', 'Pearl', 'Split'])
+const COMPETITIVE_MAPS = new Set(['Ascent', 'Breeze', 'Fracture', 'Haven', 'Lotus', 'Pearl', 'Split'])
 // 不人気とされるマップ（環境による）
 const UNPOPULAR_MAPS   = new Set(['Breeze', 'Fracture', 'Abyss', 'Icebox'])
 
