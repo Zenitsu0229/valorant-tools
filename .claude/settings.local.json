@@ -10,7 +10,18 @@
       "Bash(cd \"D:\\\\02_project\\\\valorant-tools\" && npm install @emailjs/browser)",
       "Bash(npm run:*)",
       "Bash(cd D:/02_project/valorant-tools && npm install 2>&1 | tail -5)",
-      "Bash(npm install *)"
+      "Bash(npm install *)",
+      "WebFetch(domain:playvalorant.com)",
+      "WebFetch(domain:media.valorant-api.com)",
+      "Bash(git -C \"D:\\\\02_project\\\\valorant-tools\" status)",
+      "Bash(git -C \"D:\\\\02_project\\\\valorant-tools\" diff)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(curl -s \"https://valorant-api.com/v1/maps\")",
+      "Bash(node -e ' *)",
+      "Bash(powershell -NoProfile -Command 'Get-Process node -ErrorAction SilentlyContinue | Where-Object { $_.MainWindowTitle -eq '\\\\'''\\\\'' } | Select-Object Id')",
+      "Bash(taskkill //F //IM node.exe)"
     ]
   }
 }

@@ -2,7 +2,7 @@
 const BASE = 'https://media.valorant-api.com/maps'
 
 /**
- * 全マップ定義（2026年5月時点 / 12マップ）
+ * 全マップ定義（2026年7月時点 / Patch 13.00 / 13マップ）
  * @type {{ name: string, sub: string, splash: string, listIcon: string }[]}
  *
  * - name:     マップ英語名
@@ -25,4 +25,5 @@ export const MAPS = [
   { name: 'Sunset',  sub: 'アメリカ / LA',       splash: `${BASE}/92584fbe-486a-b1b2-9faa-39b0f486b498/splash.png`,     listIcon: `${BASE}/92584fbe-486a-b1b2-9faa-39b0f486b498/listviewicon.png` },
   { name: 'Abyss',   sub: 'アイスランド',        splash: `${BASE}/224b0a95-48b9-f703-1bd8-67aca101a61f/splash.png`,     listIcon: `${BASE}/224b0a95-48b9-f703-1bd8-67aca101a61f/listviewicon.png` },
   { name: 'Corrode', sub: 'カロード',            splash: `${BASE}/1c18ab1f-420d-0d8b-71d0-77ad3c439115/splash.png`,     listIcon: `${BASE}/1c18ab1f-420d-0d8b-71d0-77ad3c439115/listviewicon.png` },
+  { name: 'Summit',  sub: '中国',                splash: `${BASE}/756da597-416b-c0f2-f47b-afbdf28670bc/splash.png`,     listIcon: `${BASE}/756da597-416b-c0f2-f47b-afbdf28670bc/listviewicon.png` },
 ]

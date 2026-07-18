@@ -10,8 +10,8 @@ const resultKey = ref(0)     // 結果カードの再描画用キー（アニメ
 const error     = ref('')
 
 // ---- マッププリセット ----
-// コンペティティブで使用されるマップ
-const COMPETITIVE_MAPS = new Set(['Ascent', 'Breeze', 'Fracture', 'Haven', 'Lotus', 'Pearl', 'Split'])
+// コンペティティブで使用されるマップ（Patch 13.00 / Act 4 時点）
+const COMPETITIVE_MAPS = new Set(['Ascent', 'Breeze', 'Haven', 'Lotus', 'Split', 'Summit', 'Sunset'])
 // 不人気とされるマップ（環境による）
 const UNPOPULAR_MAPS   = new Set(['Breeze', 'Fracture', 'Abyss', 'Icebox'])
 
