@@ -4,6 +4,13 @@ export const BASE_URL = 'https://valorant-tools-two.vercel.app'
 
 // ページごとの SEO 設定（title / canonical / description / OGP）
 export const PAGE_META = {
+  '/home': {
+    title:       'VAL RANDOM 使い方・更新履歴 | VALORANTツールまとめ',
+    canonical:   `${BASE_URL}/home`,
+    description: 'VAL RANDOMの使い方ガイドと更新履歴。エージェントランダムピック・5v5カスタム・マップルーレット・チーム分けツールの一覧と各ツールの使い方をまとめて紹介。',
+    ogTitle:     'VAL RANDOM – Home | Usage Guide & Changelog',
+    ogDesc:      'Overview and usage guide for all VAL RANDOM tools: agent picker, 5v5 custom, map roulette, and team split — plus release notes.',
+  },
   '/': {
     title:       'VALORANTランダムピック・キャラルーレット【無料・バン機能付き】| VAL RANDOM',
     canonical:   `${BASE_URL}/`,
@@ -50,6 +57,7 @@ export const PAGE_META = {
 
 // TAB_ROUTES: App.vue のタブ切り替えと pathForTab() が参照する
 export const TAB_ROUTES = [
+  { path: '/home',           tab: 'home'      },
   { path: '/agent-roulette', tab: 'agent5'    },
   { path: '/map-roulette',   tab: 'map'       },
   { path: '/custom',         tab: 'agent5v5'  },
@@ -57,9 +65,16 @@ export const TAB_ROUTES = [
   { path: '/contact',        tab: 'contact'   },
 ]
 
+// 各タブは App.vue 側で v-show により切り替えており、<router-view> は使わないため
+// ダミーの no-op コンポーネントを割り当てる。
+// component を持たないルートレコードは Vue Router のマッチャーに登録されず
+// （route.meta が常に空になり、直接URLアクセス時に誤ったタブが表示される・
+//  ブラウザの戻る/進むでタブが同期しなくなる）ため、これは省略できない。
+const NOOP_COMPONENT = { render: () => null }
+
 const routes = [
   { path: '/', redirect: '/agent-roulette' },
-  ...TAB_ROUTES.map(({ path, tab }) => ({ path, meta: { tab } })),
+  ...TAB_ROUTES.map(({ path, tab }) => ({ path, component: NOOP_COMPONENT, meta: { tab } })),
 ]
 
 export default createRouter({

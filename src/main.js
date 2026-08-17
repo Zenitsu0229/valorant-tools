@@ -37,4 +37,13 @@ function updateMeta(path) {
 
 router.afterEach((to) => updateMeta(to.path))
 
-createApp(App).use(router).mount('#app')
+const app = createApp(App)
+app.use(router) // これが初回ナビゲーションの解決をトリガーする
+
+// 初回ルート解決を待ってからマウントする。
+// これを待たずにマウントすると、直接URLアクセス時（ブックマーク・共有リンク等）に
+// route.meta が未解決のまま App.vue の activeTab 初期値が決まってしまい、
+// タイトル/SEOメタは正しいのに表示コンテンツだけ既定タブ（Random）のままになる不具合が起きる。
+router.isReady().then(() => {
+  app.mount('#app')
+})

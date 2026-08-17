@@ -7,6 +7,7 @@ injectSpeedInsights()
 // ページコンポーネント
 import AppHeader      from '@/components/AppHeader.vue'
 import AppFooter      from '@/components/AppFooter.vue'
+import Home           from '@/pages/Home/Home.vue'
 import Agent5         from '@/pages/Agent5/Agent5.vue'
 import Agent5v5       from '@/pages/Agent5v5/Agent5v5.vue'
 import Map            from '@/pages/Map/Map.vue'
@@ -25,6 +26,7 @@ const route  = useRoute()
 
 // ナビゲーションタブ定義（key: 内部識別子, label: 表示名）
 const tabs = [
+  { key: 'home',      label: 'Home'    },
   { key: 'agent5',    label: 'Random'  },
   { key: 'agent5v5',  label: 'Custom'  },
   { key: 'map',       label: 'Map'     },
@@ -92,6 +94,7 @@ function closeLegal() {
 
     <!-- 通常のタブコンテンツ（v-show で DOM を維持しつつ表示切り替え） -->
     <template v-else>
+      <Home     v-show="activeTab === 'home'" @navigate="setTab($event)" />
       <Agent5   v-show="activeTab === 'agent5'" />
       <Agent5v5 v-show="activeTab === 'agent5v5'" />
       <Map      v-show="activeTab === 'map'" />
