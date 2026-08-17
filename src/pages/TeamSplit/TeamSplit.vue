@@ -13,13 +13,17 @@ const { setTeams } = useSharedTeam()
 const MIN_PLAYERS = 2
 const MAX_PLAYERS = 10
 
-// TeamSplit で使う簡略ランク（4段階）
-// チーム分けの計算に使う value は ranks.js の値と揃えている
+// TeamSplit で使う簡略ランク（8段階）
+// value はチーム分け計算用のポイント（アイアン=1 〜 レディアント=8 の等間隔）
 const TEAM_RANKS = [
-  { key: 'bronze',   label: 'ブロンズ',   value: 5,  tier: 'bronze'   },
-  { key: 'gold',     label: 'ゴールド',   value: 11, tier: 'gold'     },
-  { key: 'diamond',  label: 'ダイヤ',     value: 17, tier: 'diamond'  },
-  { key: 'immortal', label: 'イモータル', value: 23, tier: 'immortal' },
+  { key: 'iron',     label: 'アイアン',     value: 1, tier: 'iron'     },
+  { key: 'bronze',   label: 'ブロンズ',     value: 2, tier: 'bronze'   },
+  { key: 'silver',   label: 'シルバー',     value: 3, tier: 'silver'   },
+  { key: 'gold',     label: 'ゴールド',     value: 4, tier: 'gold'     },
+  { key: 'platinum', label: 'プラチナ',     value: 5, tier: 'platinum' },
+  { key: 'diamond',  label: 'ダイヤ',       value: 6, tier: 'diamond'  },
+  { key: 'immortal', label: 'イモータル',   value: 7, tier: 'immortal' },
+  { key: 'radiant',  label: 'レディアント', value: 8, tier: 'radiant'  },
 ]
 // ランクキー → ランクオブジェクトの高速参照マップ
 const RANK_MAP = Object.fromEntries(TEAM_RANKS.map(r => [r.key, r]))
@@ -28,7 +32,7 @@ const RANK_MAP = Object.fromEntries(TEAM_RANKS.map(r => [r.key, r]))
 const makePlayer = (n) => ({
   name:        '',
   placeholder: `Player ${n}`,
-  rank:        'bronze', // デフォルトランク
+  rank:        'iron', // デフォルトランク
 })
 
 // チーム分けモード定義
@@ -210,6 +214,16 @@ function startHandicapSlot(final) {
   step(0)
 }
 
+// ハンデの target に応じた確定ラベルを返すヘルパー
+const HANDICAP_CONFIRM_LABELS = {
+  strong: '強チームへのハンデ 確定',
+  weak:   '弱チームへのボーナス 確定',
+  both:   '両チームへのルール 確定',
+}
+function handicapConfirmLabel(handicap) {
+  return HANDICAP_CONFIRM_LABELS[handicap?.target] ?? HANDICAP_CONFIRM_LABELS.strong
+}
+
 // チームの平均ランクに最も近いランクラベルを返すヘルパー
 function avgRankLabel(team) {
   if (team.length === 0) return '—'
@@ -362,7 +376,7 @@ function splitTeams() {
             :disabled="isRolling"
             @keydown.enter="focusNextInput(idx)"
           />
-          <!-- ランク選択チップ（4段階） -->
+          <!-- ランク選択チップ（8段階） -->
           <div class="ts-rank-chips">
             <button
               v-for="r in TEAM_RANKS" :key="r.key"
@@ -488,9 +502,21 @@ function splitTeams() {
           <div class="ts-handicap-card__header">
             <span class="ts-handicap-card__icon">{{ displayHandicap.icon }}</span>
             <span class="ts-handicap-card__label">
-              {{ isHandicapRolling ? 'DRAWING HANDICAP...' : '強チームへのハンデ 確定' }}
+              {{ isHandicapRolling ? 'DRAWING HANDICAP...' : handicapConfirmLabel(displayHandicap) }}
             </span>
             <span class="ts-handicap-card__name">{{ displayHandicap.label }}</span>
+          </div>
+          <!-- 強さインジケーター（1〜5段階） -->
+          <div class="ts-handicap-card__strength" :class="{ 'ts-handicap-card__strength--hidden': isHandicapRolling }">
+            <span class="ts-handicap-card__strength-text">強さ</span>
+            <span class="ts-handicap-card__pips">
+              <span
+                v-for="n in 5" :key="n"
+                class="ts-handicap-card__pip"
+                :class="{ 'ts-handicap-card__pip--filled': n <= displayHandicap.strength }"
+              />
+            </span>
+            <span class="ts-handicap-card__strength-num">{{ displayHandicap.strength }}/5</span>
           </div>
           <!-- スロット中はハンデ説明を非表示にしてチラ見えを防止 -->
           <p class="ts-handicap-card__desc" :class="{ 'ts-handicap-card__desc--hidden': isHandicapRolling }">

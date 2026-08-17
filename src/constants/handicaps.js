@@ -1,137 +1,157 @@
 /**
  * ハンデ一覧
- * target: 'strong' = 強チーム(TEAM A)への制約 / 'weak' = 弱チーム(TEAM B)へのボーナス / 'both' = 両チームへの制約
+ * target:   'strong' = 強チーム(TEAM A)への制約 / 'weak' = 弱チーム(TEAM B)へのボーナス / 'both' = 両チームへの制約
+ * strength: ハンデの強さ（1=軽い 〜 5=重い）。チーム分け結果のハンデカードに表示される。
  * 追加する場合はこのファイルにオブジェクトを追記するだけでOK
  */
 export const HANDICAPS = [
-  // ===== 移動系 =====
+  // ===== 経済系（設定画面のクレジット項目で即調整可） =====
   {
-    id:     'walk-only',
-    icon:   '🚶',
-    label:  '歩き縛り',
-    desc:   '強チームは常に歩き移動のみ（シフト歩き可）。走りは禁止。',
-    target: 'strong',
+    id:       'weak-unlimited-credits',
+    icon:     '💎',
+    label:    'クレジット無限（弱チーム）',
+    desc:     '弱チームは毎ラウンド開始時のクレジットを実質無制限にする。カスタム設定画面のクレジット項目で調整可能。',
+    target:   'weak',
+    strength: 4,
   },
   {
-    id:     'no-jump',
-    icon:   '⬇',
-    label:  'ジャンプ禁止',
-    desc:   '強チームはジャンプ禁止。段差の上り下りは歩いて行える範囲のみ。',
-    target: 'strong',
-  },
-
-  // ===== 武器系 =====
-  {
-    id:     'pistol-only',
-    icon:   '🔫',
-    label:  'ピストルのみ',
-    desc:   '強チームはピストル（クラシック / ショーティ / フレンジー / ゴースト / シェリフ）のみ購入可。',
-    target: 'strong',
+    id:       'strong-credit-cut',
+    icon:     '📉',
+    label:    '開始クレジット減額',
+    desc:     '強チームの開始クレジットを800→400に減額する。カスタム設定画面のクレジット項目で調整可能。',
+    target:   'strong',
+    strength: 2,
   },
   {
-    id:     'knife-only',
-    icon:   '🔪',
-    label:  'ナイフのみ',
-    desc:   '強チームは近接攻撃（ナイフ）のみ使用可。銃の購入・使用禁止。',
-    target: 'strong',
+    id:       'no-armor-buy',
+    icon:     '🛡',
+    label:    'アーマー購入禁止',
+    desc:     '強チームはアーマー・シールド類の購入を禁止する（口頭ルール）。',
+    target:   'strong',
+    strength: 2,
   },
   {
-    id:     'no-rifle',
-    icon:   '🚫',
-    label:  'ライフル禁止',
-    desc:   '強チームはライフル系（ヴァンダル / ファントム / ガーディアン等）の購入禁止。',
-    target: 'strong',
-  },
-  {
-    id:     'shotgun-only',
-    icon:   '💥',
-    label:  'ショットガンのみ',
-    desc:   '強チームはショットガン（バッキー / ジャッジ）のみ購入可。',
-    target: 'strong',
+    id:       'ult-only-ability-buy',
+    icon:     '💠',
+    label:    'ウルト以外購入禁止',
+    desc:     '強チームはウルトポイント以外の有償アビリティ購入を禁止する（口頭ルール）。',
+    target:   'strong',
+    strength: 3,
   },
 
-  // ===== 装備系 =====
+  // ===== 武器縛り系（口頭ルールのみで成立） =====
   {
-    id:     'no-armor',
-    icon:   '🛡',
-    label:  '防具購入禁止',
-    desc:   '強チームはアーマー・シールド類の購入禁止。ノーアーマー縛り。',
-    target: 'strong',
+    id:       'pistol-only',
+    icon:     '🔫',
+    label:    'ピストルのみ',
+    desc:     '強チームはピストル（クラシック / ショーティ / フレンジー / ゴースト / シェリフ）のみ購入可（口頭ルールのみで成立）。',
+    target:   'strong',
+    strength: 5,
   },
   {
-    id:     'no-buy',
-    icon:   '💸',
-    label:  '購入禁止（ピストルラウンド縛り）',
-    desc:   '強チームは毎ラウンド購入フェーズで何も買えない。初期装備のみ。',
-    target: 'strong',
-  },
-
-  // ===== アビリティ系 =====
-  {
-    id:     'no-ability',
-    icon:   '🔕',
-    label:  '全アビリティ禁止',
-    desc:   '強チームはウルト含む全アビリティ使用禁止。射撃と移動のみ。',
-    target: 'strong',
+    id:       'no-rifle-smg-ok',
+    icon:     '🚫',
+    label:    'ライフル禁止',
+    desc:     '強チームはライフル禁止。SMG・ショットガンまでは購入可（口頭ルールのみで成立）。',
+    target:   'strong',
+    strength: 4,
   },
   {
-    id:     'no-ult',
-    icon:   '✨',
-    label:  'ウルト禁止',
-    desc:   '強チームはアルティメット使用禁止。通常スキルは使用可。',
-    target: 'strong',
-  },
-  {
-    id:     'no-signature',
-    icon:   '🚷',
-    label:  'シグネチャー禁止',
-    desc:   '強チームは各エージェントのシグネチャースキル（無料スキル）使用禁止。',
-    target: 'strong',
+    id:       'no-operator',
+    icon:     '🎯',
+    label:    'オペレーター禁止',
+    desc:     '強チームはオペレーター（スナイパーライフル）の購入を禁止する（口頭ルールのみで成立）。',
+    target:   'strong',
+    strength: 2,
   },
 
-  // ===== 戦術系 =====
+  // ===== アビリティ・エージェント系（口頭ルール） =====
   {
-    id:     'rush-every-round',
-    icon:   '⚡',
-    label:  '毎ラウンド突撃',
-    desc:   '強チームはラウンド開始後10秒以内にサイトへ突撃しなければならない。',
-    target: 'strong',
+    id:       'no-ability-all',
+    icon:     '🔕',
+    label:    'アビリティ全面禁止',
+    desc:     '強チームはウルト含む全アビリティ使用禁止（口頭ルール）。',
+    target:   'strong',
+    strength: 5,
   },
   {
-    id:     'solo-entry',
-    icon:   '🚪',
-    label:  '1人ずつ入場',
-    desc:   '強チームはサイト入場を必ず1人ずつ行う。複数人同時エントリー禁止。',
-    target: 'strong',
+    id:       'no-ult',
+    icon:     '✨',
+    label:    'ウルト禁止',
+    desc:     '強チームはアルティメット使用禁止。通常スキルは使用可（口頭ルール）。',
+    target:   'strong',
+    strength: 3,
   },
   {
-    id:     'no-camp',
-    icon:   '🏃',
-    label:  'キャンプ禁止',
-    desc:   '強チームは同じ場所に5秒以上留まることを禁止。常に動き続けること。',
-    target: 'strong',
-  },
-  {
-    id:     'first-blood-sit',
-    icon:   '💀',
-    label:  '先制キルしたら離脱',
-    desc:   '強チームは最初にキルした1人が即座にそのラウンドを退場する。',
-    target: 'strong',
+    id:       'no-duelist',
+    icon:     '⚔',
+    label:    'デュエリスト禁止',
+    desc:     '強チームはデュエリストロールのエージェント選択を禁止する（口頭ルール）。',
+    target:   'strong',
+    strength: 2,
   },
 
-  // ===== コミュニケーション系 =====
+  // ===== スコア・ラウンド系（開始前に取り決め） =====
   {
-    id:     'no-vc',
-    icon:   '🔇',
-    label:  'VC禁止',
-    desc:   '強チームはボイスチャット・テキストチャット全面禁止。アイコンのみでコミュニケーション。',
-    target: 'strong',
+    id:       'behind-start-0-3',
+    icon:     '📊',
+    label:    '0-3ビハインドスタート',
+    desc:     '強チームは試合開始時点で0-3のビハインドから始める（事前取り決め）。',
+    target:   'strong',
+    strength: 3,
   },
   {
-    id:     'no-minimap',
-    icon:   '🗺',
-    label:  'ミニマップ禁止',
-    desc:   '強チームはミニマップを非表示にしてプレイ。位置情報なしで戦う。',
-    target: 'strong',
+    id:       'weak-plus-2-rounds',
+    icon:     '➕',
+    label:    '弱チーム+2ラウンド',
+    desc:     '弱チームは試合開始時点で+2ラウンドを先取した状態から始める（事前取り決め）。',
+    target:   'weak',
+    strength: 2,
+  },
+  {
+    id:       'win-condition-15',
+    icon:     '🏁',
+    label:    '勝利条件15ラウンド',
+    desc:     '強チームの勝利条件を15ラウンド先取に引き上げる。弱チームは通常通りの先取本数で勝利（事前取り決め）。',
+    target:   'strong',
+    strength: 4,
+  },
+
+  // ===== 人数系（ロビーで人数調整するだけ） =====
+  {
+    id:       'four-vs-five',
+    icon:     '👥',
+    label:    '4人 vs 5人',
+    desc:     '強チームは4人、弱チームは5人でプレイする。ロビーの人数を調整するだけで成立。',
+    target:   'strong',
+    strength: 5,
+  },
+
+  // ===== HP削り系（通常アビリティで再現、チート設定不要） =====
+  {
+    id:       'self-molly-start',
+    icon:     '🔥',
+    label:    '自傷スタート',
+    desc:     '強チームは試合開始時に味方のモロトフ等でHPを削ってからラウンドを開始する（通常アビリティで再現、チート設定不要）。',
+    target:   'strong',
+    strength: 3,
+  },
+
+  // ===== 情報・視覚系（各自の設定/口頭ルール） =====
+  {
+    id:       'no-vc',
+    icon:     '🔇',
+    label:    'VC禁止',
+    desc:     '強チームはボイスチャット・テキストチャット全面禁止（各自の設定/口頭ルール）。',
+    target:   'strong',
+    strength: 3,
+  },
+  {
+    id:       'no-minimap',
+    icon:     '🗺',
+    label:    'ミニマップ非表示',
+    desc:     '強チームはミニマップを非表示にしてプレイする（各自の設定/口頭ルール）。',
+    target:   'strong',
+    strength: 3,
   },
 ]

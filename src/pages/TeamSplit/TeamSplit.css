@@ -112,12 +112,11 @@
 .ts-name-input:disabled { opacity: 0.5; }
 .ts-name-input::placeholder { color: var(--text-dim); }
 
-/* ランク選択チップ */
-.ts-rank-chips { display: flex; gap: 5px; flex-wrap: nowrap; }
+/* ランク選択チップ（8段階を4列×2行のグリッドで配置） */
+.ts-rank-chips { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px 5px; }
 .ts-rank-chip {
-  flex: 1;
   padding: 4px 0;
-  font-size: 11px; font-weight: 700;
+  font-size: 10px; font-weight: 700;
   letter-spacing: 0.3px;
   border-radius: 3px;
   border: 1px solid var(--border);
@@ -129,14 +128,22 @@
   text-align: center;
 }
 .ts-rank-chip:disabled { opacity: 0.3; cursor: not-allowed; }
+.ts-rank-chip--iron:hover:not(:disabled):not(.ts-rank-chip--active)     { border-color: #8a94a6; color: #8a94a6; }
 .ts-rank-chip--bronze:hover:not(:disabled):not(.ts-rank-chip--active)   { border-color: #cd7f32; color: #cd7f32; }
+.ts-rank-chip--silver:hover:not(:disabled):not(.ts-rank-chip--active)   { border-color: #cbd5e1; color: #cbd5e1; }
 .ts-rank-chip--gold:hover:not(:disabled):not(.ts-rank-chip--active)     { border-color: #eab308; color: #eab308; }
+.ts-rank-chip--platinum:hover:not(:disabled):not(.ts-rank-chip--active) { border-color: #2dd4bf; color: #2dd4bf; }
 .ts-rank-chip--diamond:hover:not(:disabled):not(.ts-rank-chip--active)  { border-color: #818cf8; color: #818cf8; }
 .ts-rank-chip--immortal:hover:not(:disabled):not(.ts-rank-chip--active) { border-color: #fb7185; color: #fb7185; }
+.ts-rank-chip--radiant:hover:not(:disabled):not(.ts-rank-chip--active)  { border-color: #fde047; color: #fde047; }
+.ts-rank-chip--active.ts-rank-chip--iron     { background: rgba(138,148,166,0.15); border-color: #8a94a6; color: #8a94a6; }
 .ts-rank-chip--active.ts-rank-chip--bronze   { background: rgba(205,127,50,0.15);  border-color: #cd7f32; color: #cd7f32; }
+.ts-rank-chip--active.ts-rank-chip--silver   { background: rgba(203,213,225,0.15); border-color: #cbd5e1; color: #cbd5e1; }
 .ts-rank-chip--active.ts-rank-chip--gold     { background: rgba(234,179,8,0.15);   border-color: #eab308; color: #eab308; }
+.ts-rank-chip--active.ts-rank-chip--platinum { background: rgba(45,212,191,0.15);  border-color: #2dd4bf; color: #2dd4bf; }
 .ts-rank-chip--active.ts-rank-chip--diamond  { background: rgba(129,140,248,0.15); border-color: #818cf8; color: #818cf8; }
 .ts-rank-chip--active.ts-rank-chip--immortal { background: rgba(251,113,133,0.15); border-color: #fb7185; color: #fb7185; }
+.ts-rank-chip--active.ts-rank-chip--radiant  { background: rgba(253,224,71,0.15);  border-color: #fde047; color: #fde047; }
 
 /* ===== スプリット演出パネル ===== */
 .ts-split-stage {
@@ -458,10 +465,14 @@
   border: 1px solid currentColor;
   white-space: nowrap; flex-shrink: 0;
 }
+.ts-rank-badge--iron     { color: #8a94a6; background: rgba(138,148,166,0.1); }
 .ts-rank-badge--bronze   { color: #cd7f32; background: rgba(205,127,50,0.1); }
+.ts-rank-badge--silver   { color: #cbd5e1; background: rgba(203,213,225,0.1); }
 .ts-rank-badge--gold     { color: #eab308; background: rgba(234,179,8,0.1); }
+.ts-rank-badge--platinum { color: #2dd4bf; background: rgba(45,212,191,0.1); }
 .ts-rank-badge--diamond  { color: #818cf8; background: rgba(129,140,248,0.1); }
 .ts-rank-badge--immortal { color: #fb7185; background: rgba(251,113,133,0.1); }
+.ts-rank-badge--radiant  { color: #fde047; background: rgba(253,224,71,0.1); }
 
 /* ===== ハンデスロット ===== */
 @keyframes tsHandicapSlideIn {
@@ -527,7 +538,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 .ts-handicap-card__icon  { font-size: 22px; line-height: 1; flex-shrink: 0; }
 .ts-handicap-card__label {
@@ -539,6 +550,37 @@
   font-size: 20px; font-weight: 700;
   color: var(--text); letter-spacing: 1px;
   margin-left: auto;
+}
+
+/* 強さインジケーター */
+.ts-handicap-card__strength {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+  transition: opacity 0.1s;
+}
+.ts-handicap-card__strength--hidden { opacity: 0; }
+.ts-handicap-card__strength-text {
+  font-size: 10px; color: var(--text-dim);
+  letter-spacing: 1px; text-transform: uppercase;
+}
+.ts-handicap-card__pips { display: flex; gap: 3px; }
+.ts-handicap-card__pip {
+  width: 14px; height: 6px;
+  border-radius: 1px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border);
+}
+.ts-handicap-card__pip--filled {
+  background: #fb7185;
+  border-color: #fb7185;
+  box-shadow: 0 0 6px rgba(251,113,133,0.5);
+}
+.ts-handicap-card__strength-num {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 12px; font-weight: 700;
+  color: var(--text-dim);
 }
 .ts-handicap-card__desc {
   font-size: 13px; color: var(--text-dim);
